@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import env from "./config/env.js";
 import mainRouter from "./routes/index.js";
+import { notFoundHandler, errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -39,32 +40,10 @@ app.get("/health", (req, res) => {
 
 app.use("/api/v1", mainRouter);
 
-// ─── 404 Handler ────────────────────────────────────────
+// ─── 404 + Global Error Handlers ───────────────────────
+// Defined in middleware/errorHandler.js and mounted last.
 
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: `Route ${req.method} ${req.originalUrl} not found`,
-    });
-});
-
-// ─── Global Error Handler ───────────────────────────────
-// Must be the LAST middleware registered. Catches all unhandled errors.
-
-app.use((err, req, res, next) => {
-    console.error("Unhandled Error:", err);
-
-    const statusCode = err.statusCode || 500;
-    const message =
-        env.NODE_ENV === "production"
-            ? "Internal server error"
-            : err.message || "Something went wrong";
-
-    res.status(statusCode).json({
-        success: false,
-        message,
-        ...(env.NODE_ENV !== "production" && { stack: err.stack }),
-    });
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
