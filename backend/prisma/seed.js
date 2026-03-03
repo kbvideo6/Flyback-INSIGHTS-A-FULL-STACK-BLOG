@@ -7,7 +7,9 @@
  * Requires `prisma generate` to have been run first.
  */
 
-import { PrismaClient } from '../src/generated/prisma/index.js';
+import pkg from '@prisma/client';
+const { PrismaClient } = pkg;
+import { PrismaPg } from '@prisma/adapter-pg';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -16,7 +18,8 @@ const require = createRequire(import.meta.url);
 const dotenv = await import('dotenv');
 dotenv.default.config();
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

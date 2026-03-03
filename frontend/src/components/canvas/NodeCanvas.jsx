@@ -19,7 +19,7 @@ const positionToStyle = (pos) => {
         ...(bottom !== undefined && { bottom }),
         ...(width !== undefined && { width }),
         ...(maxWidth !== undefined && { maxWidth }),
-        ...(center && { transform: 'translateX(-50%)', left: '50%' }),
+        ...(center && { transform: 'translateX(-50%)', left: '50%', top: '10%' }),
     }
 }
 
