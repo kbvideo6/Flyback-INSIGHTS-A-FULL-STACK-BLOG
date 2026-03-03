@@ -1,6 +1,6 @@
 // AdminLayout — isolated shell for the CMS. No public Navbar or Footer.
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-import useAuth from '../../hooks/useAuth'
+import useAuth from '../../hooks/useAuth.jsx'
 
 const NAV_LINKS = [
     { to: '/admin/articles', label: '📄 Articles' },

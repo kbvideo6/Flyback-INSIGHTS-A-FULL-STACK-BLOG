@@ -1,11 +1,23 @@
 // ArticlePage — Dynamic article reading page based on :slug param
 import { useParams, Link } from 'react-router-dom'
-import articles, { getArticleBySlug, getArticleUrl } from '../constants/articles'
+import useArticle from '../hooks/useArticle'
+import articles, { getArticleUrl } from '../constants/articles'
 
 const ArticlePage = () => {
     const { slug } = useParams()
-    const article = getArticleBySlug(slug)
+    const { article, isLoading, error } = useArticle(slug)
 
+    // ── Loading state ──
+    if (isLoading) {
+        return (
+            <div className="w-full max-w-3xl mx-auto px-4 py-20 text-center">
+                <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-gray-500 text-sm">Loading article…</p>
+            </div>
+        )
+    }
+
+    // ── Not found / error state ──
     if (!article) {
         return (
             <div className="w-full max-w-3xl mx-auto px-4 py-20 text-center">

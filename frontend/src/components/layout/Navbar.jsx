@@ -20,10 +20,10 @@ const Navbar = () => {
                     <Link to="/topics" className="text-gray-300 hover:text-primary transition-colors">
                         Topics
                     </Link>
-                    <Link to="/DeepDives" className="text-gray-300 hover:text-primary transition-colors">
+                    <Link to="/deep-dives" className="text-gray-300 hover:text-primary transition-colors">
                         Deep Dives
                     </Link>
-                    <Link to="/Analysis" className="text-gray-300 hover:text-primary transition-colors">
+                    <Link to="/analysis" className="text-gray-300 hover:text-primary transition-colors">
                         Analysis
                     </Link>
                     <Link
