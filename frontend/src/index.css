@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+/* ── Design Tokens (Tailwind v4 CSS‑native theme) ────────────────  */
+@theme {
+    /* ── Colors ── */
+    --color-primary: #3B82F6;
+    --color-background-light: #f3f4f6;
+    --color-background-dark: #0f1115;
+    --color-glass-border: rgba(255, 255, 255, 0.10);
+    --color-glass-surface: rgba(255, 255, 255, 0.05);
+    --color-glass-surface-hover: rgba(255, 255, 255, 0.08);
+    --color-glass-surface-light: rgba(255, 255, 255, 0.70);
+
+    /* ── Typography ── */
+    --font-display: "Playfair Display", serif;
+    --font-sans: "Inter", sans-serif;
+
+    /* ── Border Radius ── */
+    --radius-DEFAULT: 0.5rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+}
+
+/* ── Base / Reset layer ──────────────────────────────────────────── */
+@layer base {
+
+    /* Custom scrollbar (Chromium / WebKit) */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--color-background-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+    }
+
+    /* Body defaults matching the design reference */
+    body {
+        background-color: var(--color-background-dark);
+        color: #e5e7eb;
+        /* gray‑200 equivalent */
+        font-family: var(--font-sans);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Text selection accent */
+    ::selection {
+        background: var(--color-primary);
+        color: #fff;
+    }
+}
+
+/* ── Reusable component utilities ────────────────────────────────── */
+@layer components {
+
+    /* Glass‑morphism panel used across cards, nav, sidebars
+       Tailwind equivalent: bg-glass-surface backdrop-blur-md border border-glass-border rounded-2xl */
+    .glass-panel {
+        background: var(--color-glass-surface);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--color-glass-border);
+        border-radius: var(--radius-2xl);
+    }
+
+    /* Decorative connection lines between nodes */
+    .node-connection {
+        position: absolute;
+        background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.2), transparent);
+        height: 1px;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .vertical-connection {
+        position: absolute;
+        background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.2), transparent);
+        width: 1px;
+        z-index: 0;
+        pointer-events: none;
+    }
+}
