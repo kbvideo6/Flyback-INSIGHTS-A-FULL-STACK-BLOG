@@ -7,7 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ─── Models ──────────────────────────────────────────────
@@ -35,8 +37,10 @@ model Article {
   slug        String    @unique
   excerpt     String?
   content     String    // full article body (HTML or Markdown)
-  imageUrl    String?   @map("image_url")
-  author      String    @default("Flyback Electronics")
+  imageUrl      String?   @map("image_url")
+  coverImageUrl String?   @map("cover_image_url")
+  readTime      Int?      @map("read_time")      // minutes
+  author        String    @default("Flyback Electronics")
   isFeatured  Boolean   @default(false) @map("is_featured")
   isPublished Boolean   @default(false) @map("is_published")
   publishedAt DateTime? @map("published_at")
