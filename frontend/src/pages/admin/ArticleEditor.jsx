@@ -5,7 +5,6 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import api from '../../lib/api'
 import { supabase } from '../../lib/supabase'
 import { slugify } from '../../lib/slugify'
 
@@ -24,8 +23,6 @@ const Btn = ({ onClick, active, title, children }) => (
 
 const DIVIDER = <span className="w-px h-5 bg-white/10 mx-1 self-center" />
 
-const CATEGORIES = ['Deep Dive', 'Analysis', 'Sensors', 'Edge Computing', 'Materials', 'Robotics']
-
 // ── Main component ────────────────────────────────────────────────────────
 const ArticleEditor = () => {
     const { id } = useParams()         // undefined → new article
@@ -36,18 +33,12 @@ const ArticleEditor = () => {
     const [title, setTitle] = useState('')
     const [slug, setSlug] = useState('')
     const [excerpt, setExcerpt] = useState('')
-    const [category, setCategory] = useState('')
+    const [categoryId, setCategoryId] = useState('')  // DB category ID
+    const [dbCategories, setDbCategories] = useState([])
     const [readTime, setReadTime] = useState('')
-    const [status, setStatus] = useState('draft')
-    const [coverUrl, setCoverUrl] = useState(null)   // URL returned by upload
+    const [coverUrl, setCoverUrl] = useState('')
     const [saving, setSaving] = useState(false)
     const [saveError, setSaveError] = useState(null)
-
-    // ── Cover image drag-and-drop state ──────────────────────────────────
-    const [isDragging, setIsDragging] = useState(false)
-    const [isUploading, setIsUploading] = useState(false)
-    const [uploadError, setUploadError] = useState(null)
-    const coverInputRef = useRef(null)
 
     // ── Tiptap editor ────────────────────────────────────────────────────
     const editor = useEditor({
@@ -60,21 +51,33 @@ const ArticleEditor = () => {
         },
     })
 
+    // ── Load categories for the dropdown ───────────────────────────
+    useEffect(() => {
+        supabase
+            .from('categories')
+            .select('id, name')
+            .order('name')
+            .then(({ data }) => { if (data?.length) setDbCategories(data) })
+    }, [])
+
     // ── Load existing article when editing ───────────────────────────────
     useEffect(() => {
         if (!isNew && editor) {
-            api.get(`/api/v1/admin/articles/${id}`)
-                .then((article) => {
-                    setTitle(article.title ?? '')
-                    setSlug(article.slug ?? '')
-                    setExcerpt(article.excerpt ?? '')
-                    setCategory(article.category ?? '')
-                    setReadTime(article.readTime ?? '')
-                    setStatus(article.status ?? 'draft')
-                    setCoverUrl(article.coverUrl ?? null)
-                    if (article.body) editor.commands.setContent(article.body)
+            supabase
+                .from('articles')
+                .select('*')
+                .eq('id', id)
+                .single()
+                .then(({ data, error: err }) => {
+                    if (err) { setSaveError(`Could not load article: ${err.message}`); return }
+                    setTitle(data.title ?? '')
+                    setSlug(data.slug ?? '')
+                    setExcerpt(data.excerpt ?? '')
+                    setCategoryId(String(data.category_id ?? ''))
+                    setReadTime(String(data.read_time ?? ''))
+                    setCoverUrl(data.cover_image_url ?? '')
+                    if (data.content) editor.commands.setContent(data.content)
                 })
-                .catch((err) => setSaveError(`Could not load article: ${err.message}`))
         }
     }, [id, isNew, editor])
 
@@ -94,23 +97,7 @@ const ArticleEditor = () => {
         setIsUploading(true)
         setUploadError(null)
         try {
-            const formData = new FormData()
-            // Field name must match multer's upload.single('image') in adminRoutes
-            formData.append('image', file)
-            // POST multipart/form-data — don't go through api.js (no JSON body)
-            const { data: { session } } = await supabase.auth.getSession()
-            const res = await fetch(
-                `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/api/v1/admin/upload`,
-                {
-                    method: 'POST',
-                    body: formData,
-                    headers: session?.access_token
-                        ? { Authorization: `Bearer ${session.access_token}` }
-                        : {},
-                }
-            )
-            if (!res.ok) throw new Error(await res.text())
-            const { url } = await res.json()
+            const url = await admin.uploadImage(file)
             setCoverUrl(url)
         } catch (err) {
             setUploadError(err.message ?? 'Upload failed.')
@@ -127,9 +114,10 @@ const ArticleEditor = () => {
     }
 
     // ── Save (draft or published) ─────────────────────────────────────────
-    const handleSave = async (overrideStatus) => {
+    const handleSave = async (publish = false) => {
         if (!title.trim()) { setSaveError('Title is required.'); return }
         if (!slug.trim()) { setSaveError('Slug is required.'); return }
+        if (!categoryId) { setSaveError('Category is required.'); return }
 
         setSaving(true)
         setSaveError(null)
@@ -138,20 +126,18 @@ const ArticleEditor = () => {
             title,
             slug,
             excerpt,
-            category,
-            readTime,
-            coverUrl,
-            status: overrideStatus ?? status,
-            body: editor?.getHTML() ?? '',
-            bodyJson: editor?.getJSON() ?? {},
+            content: editor?.getHTML() ?? '',
+            category_id: parseInt(categoryId, 10),
+            read_time: readTime ? parseInt(readTime, 10) : null,
+            cover_image_url: coverUrl || null,
+            is_published: publish,
         }
 
         try {
-            if (isNew) {
-                await api.post('/api/v1/admin/articles', payload)
-            } else {
-                await api.put(`/api/v1/admin/articles/${id}`, payload)
-            }
+            const { error: err } = isNew
+                ? await supabase.from('articles').insert([payload])
+                : await supabase.from('articles').update(payload).eq('id', id)
+            if (err) throw new Error(err.message)
             navigate('/admin/articles')
         } catch (err) {
             setSaveError(err.message ?? 'Save failed. Please try again.')
@@ -187,46 +173,21 @@ const ArticleEditor = () => {
             )}
 
             <div className="space-y-6">
-                {/* ── Cover image drag-and-drop ── */}
-                <div
-                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={handleDrop}
-                    onClick={() => coverInputRef.current?.click()}
-                    className={`relative cursor-pointer rounded-xl border-2 border-dashed transition-all duration-200 overflow-hidden
-                        ${isDragging ? 'border-blue-500 bg-blue-500/5' : 'border-white/10 hover:border-white/20 bg-gray-900/50'}
-                        ${coverUrl ? 'aspect-[21/9]' : 'h-28 flex items-center justify-center'}`}
-                >
-                    {coverUrl ? (
-                        <>
-                            <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span className="text-white text-sm font-medium">Click or drop to replace</span>
-                            </div>
-                        </>
-                    ) : (
-                        <div className="text-center text-gray-600 text-sm">
-                            {isUploading
-                                ? <span className="flex items-center gap-2">
-                                    <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin inline-block" />
-                                    Uploading…
-                                </span>
-                                : <>
-                                    <span className="block text-2xl mb-1">🖼</span>
-                                    Drag & drop a cover image, or <span className="text-blue-400">click to browse</span>
-                                </>
-                            }
-                        </div>
-                    )}
+                {/* ── Cover image URL ── */}
+                <div>
+                    <label htmlFor="article-cover-url" className="block text-xs font-medium text-gray-400 mb-1">Cover Image URL</label>
                     <input
-                        ref={coverInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadCoverImage(f) }}
+                        id="article-cover-url"
+                        type="url"
+                        value={coverUrl}
+                        onChange={(e) => setCoverUrl(e.target.value)}
+                        placeholder="https://…"
+                        className={fieldCls}
                     />
+                    {coverUrl && (
+                        <img src={coverUrl} alt="Cover preview" className="mt-2 rounded-lg max-h-40 object-cover" />
+                    )}
                 </div>
-                {uploadError && <p className="text-red-400 text-xs -mt-4">{uploadError}</p>}
 
                 {/* ── Metadata ── */}
                 <div className="bg-gray-900 border border-white/10 rounded-xl p-6 space-y-4">
@@ -243,10 +204,10 @@ const ArticleEditor = () => {
                             <input id="article-slug" type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="auto-generated" className={`${fieldCls} font-mono`} />
                         </div>
                         <div>
-                            <label htmlFor="article-category" className="block text-xs font-medium text-gray-400 mb-1">Category</label>
-                            <select id="article-category" value={category} onChange={(e) => setCategory(e.target.value)} className={fieldCls}>
+                            <label htmlFor="article-category" className="block text-xs font-medium text-gray-400 mb-1">Category <span className="text-red-400">*</span></label>
+                            <select id="article-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={fieldCls}>
                                 <option value="">Select category…</option>
-                                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                                {dbCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </div>
                     </div>
@@ -314,19 +275,19 @@ const ArticleEditor = () => {
                         </button>
                         <button
                             type="button"
-                            onClick={() => handleSave('draft')}
+                            onClick={() => handleSave(false)}
                             disabled={saving}
                             className="px-5 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:bg-white/5 transition-colors disabled:opacity-40"
                         >
-                            {saving && status === 'draft' ? 'Saving…' : 'Save Draft'}
+                            {saving ? 'Saving…' : 'Save Draft'}
                         </button>
                         <button
                             type="button"
-                            onClick={() => handleSave('published')}
+                            onClick={() => handleSave(true)}
                             disabled={saving}
                             className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium px-6 py-2 rounded-lg text-sm transition-colors"
                         >
-                            {saving && status === 'published' ? 'Publishing…' : 'Publish'}
+                            {saving ? 'Publishing…' : 'Publish'}
                         </button>
                     </div>
                 </div>

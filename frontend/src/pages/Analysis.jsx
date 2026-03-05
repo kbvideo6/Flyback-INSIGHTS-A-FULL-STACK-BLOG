@@ -1,9 +1,11 @@
 // Analysis Page — Data-driven reports, market forecasts, and industry analysis
 import { Link } from 'react-router-dom'
-import articles, { getArticleUrl } from '../constants/articles'
+import useArticles from '../hooks/useArticles'
+import { getArticleUrl } from '../constants/articles'
 
 const Analysis = () => {
-    const analysisArticles = articles.filter((a) => a.category === 'Analysis')
+    const { articles, isLoading } = useArticles()
+    const analysisArticles = articles.filter((a) => a.categories?.name === 'Analysis')
 
     return (
         <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 py-12">
@@ -51,7 +53,7 @@ const Analysis = () => {
                                     {analysisArticles[0].title}
                                 </h2>
                                 <p className="text-gray-400 text-base mb-6">
-                                    {analysisArticles[0].description}
+                                    {analysisArticles[0].excerpt}
                                 </p>
                                 <button className="bg-primary hover:bg-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2 w-fit">
                                     View Report
@@ -95,7 +97,7 @@ const Analysis = () => {
 
                         {/* Description */}
                         <p className="text-gray-400 text-sm line-clamp-2">
-                            {article.description}
+                            {article.excerpt}
                         </p>
                     </Link>
                 ))}

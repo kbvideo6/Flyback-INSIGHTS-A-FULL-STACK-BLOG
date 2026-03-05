@@ -1,40 +1,40 @@
-// useTrends — fetches trending topics from /api/v1/trends
-// Falls back to a static list while the API is offline.
+// useTrends — fetches active trends from Supabase `trends` table
 
 import { useState, useEffect } from 'react'
-import api from '../lib/api'
+import { supabase } from '../lib/supabase'
 
 const FALLBACK_TRENDS = [
     { id: 1, label: 'Quantum Sensors', meta: 'High Frequency Interaction' },
     { id: 2, label: 'Bio-inspired Electronics', meta: 'Emerging Sub-field' },
-    { id: 3, label: 'Solid-State LiDAR', meta: 'Accelerating Adoption' },
-    { id: 4, label: 'Chiplet Architectures', meta: 'Supply Chain Shift' },
 ]
 
 const useTrends = () => {
     const [trends, setTrends] = useState(FALLBACK_TRENDS)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
     useEffect(() => {
         let cancelled = false
         setIsLoading(true)
-        setError(null)
 
-        api.get('/api/v1/trends')
-            .then((res) => {
-                if (!cancelled) setTrends(res)
+        supabase
+            .from('trends')
+            .select('id, title, slug, summary, score, categories(name)')
+            .eq('is_active', true)
+            .order('score', { ascending: false })
+            .limit(6)
+            .then(({ data, error: err }) => {
+                if (cancelled) return
+                if (err || !data?.length) { setError(err?.message ?? null); return }
+                setTrends(data.map((t) => ({
+                    id: t.id,
+                    label: t.title,
+                    meta: t.categories?.name ?? t.summary ?? '',
+                    slug: t.slug,
+                    score: t.score,
+                })))
             })
-            .catch((err) => {
-                if (!cancelled) {
-                    console.warn('[useTrends] API unavailable, using fallback data.', err.message)
-                    setError(err.message)
-                    // Keep fallback trends in state
-                }
-            })
-            .finally(() => {
-                if (!cancelled) setIsLoading(false)
-            })
+            .finally(() => { if (!cancelled) setIsLoading(false) })
 
         return () => { cancelled = true }
     }, [])
