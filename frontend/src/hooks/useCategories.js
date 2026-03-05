@@ -1,34 +1,27 @@
-// useCategories — fetches article categories from /api/v1/categories
-// Falls back to the derived category list from local articles.js.
+// useCategories — fetches article categories from Supabase `categories` table
 
 import { useState, useEffect } from 'react'
-import api from '../lib/api'
-import { categories as localCategories } from '../constants/articles'
+import { supabase } from '../lib/supabase'
 
 const useCategories = () => {
-    const [categories, setCategories] = useState(localCategories)
-    const [isLoading, setIsLoading] = useState(false)
+    const [categories, setCategories] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
     useEffect(() => {
         let cancelled = false
         setIsLoading(true)
-        setError(null)
 
-        api.get('/api/v1/categories')
-            .then((res) => {
-                if (!cancelled) setCategories(res)
+        supabase
+            .from('categories')
+            .select('id, name, slug, color')
+            .order('name')
+            .then(({ data, error: err }) => {
+                if (cancelled) return
+                if (err) { setError(err.message); return }
+                setCategories(data?.map((c) => c.name) ?? [])
             })
-            .catch((err) => {
-                if (!cancelled) {
-                    console.warn('[useCategories] API unavailable, using local data.', err.message)
-                    setError(err.message)
-                    // Keep localCategories in state (already initialised above)
-                }
-            })
-            .finally(() => {
-                if (!cancelled) setIsLoading(false)
-            })
+            .finally(() => { if (!cancelled) setIsLoading(false) })
 
         return () => { cancelled = true }
     }, [])

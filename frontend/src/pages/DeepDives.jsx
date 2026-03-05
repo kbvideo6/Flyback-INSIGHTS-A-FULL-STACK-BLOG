@@ -1,10 +1,13 @@
 // Deep Dives Page — Featured hero articles + all Deep Dive category articles
 import { Link } from 'react-router-dom'
-import articles, { getArticleUrl } from '../constants/articles'
+import useArticles from '../hooks/useArticles'
+import { getArticleUrl } from '../constants/articles'
 
 const DeepDives = () => {
-    const heroArticles = articles.filter((a) => a.isHero)
-    const deepDiveArticles = articles.filter((a) => a.category === 'Deep Dive' && !a.isHero)
+    const { articles, isLoading } = useArticles()
+
+    const heroArticles = articles.filter((a) => a.is_featured)
+    const deepDiveArticles = articles.filter((a) => a.categories?.name === 'Deep Dive' && !a.is_featured)
 
     return (
         <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 py-12">
@@ -46,7 +49,7 @@ const DeepDives = () => {
                                         {article.title}
                                     </h2>
                                     <p className="text-gray-300 text-base lg:text-lg mb-6 max-w-2xl line-clamp-2">
-                                        {article.description}
+                                        {article.excerpt}
                                     </p>
                                     <span className="bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-full font-medium transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2 w-fit">
                                         Read Deep Dive
@@ -88,7 +91,7 @@ const DeepDives = () => {
                                 </h3>
 
                                 <p className="text-gray-400 text-sm line-clamp-2">
-                                    {article.description}
+                                    {article.excerpt}
                                 </p>
                             </Link>
                         ))}

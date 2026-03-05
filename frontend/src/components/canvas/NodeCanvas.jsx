@@ -80,7 +80,12 @@ const NodeCanvas = () => {
                 if (node.type === 'hero') {
                     return (
                         <div key={i} className={wrapperClass} style={posStyle}>
-                            <HeroNode slug={node.slug} />
+                            <HeroNode
+                                slug={node.slug}
+                                title={node.title}
+                                excerpt={node.excerpt}
+                                coverImageUrl={node.coverImageUrl}
+                            />
                         </div>
                     )
                 }
@@ -92,6 +97,7 @@ const NodeCanvas = () => {
                                 slug={node.slug}
                                 title={node.title}
                                 description={node.description}
+                                coverImageUrl={node.coverImageUrl}
                             />
                         </div>
                     )

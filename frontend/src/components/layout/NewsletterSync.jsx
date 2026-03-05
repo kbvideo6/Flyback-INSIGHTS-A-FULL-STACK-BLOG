@@ -1,6 +1,6 @@
 // NewsletterSync — Email signup bar shown on every page
 import { useState } from 'react'
-import api from '../../lib/api'
+import { supabase } from '../../lib/supabase'
 
 const NewsletterSync = () => {
     const [email, setEmail] = useState('')
@@ -15,7 +15,8 @@ const NewsletterSync = () => {
         setMessage('')
 
         try {
-            await api.post('/api/v1/newsletter/subscribe', { email })
+            const { error } = await supabase.from('subscribers').insert([{ email }])
+            if (error && error.code !== '23505') throw new Error(error.message)
             setStatus('success')
             setMessage("You're subscribed! Check your inbox.")
             setEmail('')

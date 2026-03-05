@@ -1,9 +1,7 @@
-// useArticle — fetches a single article by slug from /api/v1/articles/:slug
-// Falls back to local articles.js data while backend is offline.
+// useArticle — fetches a single published article by slug from Supabase
 
 import { useState, useEffect } from 'react'
-import api from '../lib/api'
-import { getArticleBySlug } from '../constants/articles'
+import { supabase } from '../lib/supabase'
 
 const useArticle = (slug) => {
     const [article, setArticle] = useState(null)
@@ -11,31 +9,24 @@ const useArticle = (slug) => {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        if (!slug) {
-            setIsLoading(false)
-            return
-        }
+        if (!slug) { setIsLoading(false); return }
 
         let cancelled = false
         setIsLoading(true)
         setError(null)
 
-        api.get(`/api/v1/articles/${slug}`)
-            .then((res) => {
-                if (!cancelled) setArticle(res)
+        supabase
+            .from('articles')
+            .select('*, categories(id, name, slug, color)')
+            .eq('slug', slug)
+            .eq('is_published', true)
+            .single()
+            .then(({ data, error: err }) => {
+                if (cancelled) return
+                if (err) { setError(err.code === 'PGRST116' ? 'Article not found.' : err.message); return }
+                setArticle(data)
             })
-            .catch((err) => {
-                if (!cancelled) {
-                    console.warn('[useArticle] API unavailable, using local data.', err.message)
-                    // Fallback to local static data
-                    const local = getArticleBySlug(slug)
-                    setArticle(local ?? null)
-                    if (!local) setError('Article not found.')
-                }
-            })
-            .finally(() => {
-                if (!cancelled) setIsLoading(false)
-            })
+            .finally(() => { if (!cancelled) setIsLoading(false) })
 
         return () => { cancelled = true }
     }, [slug])

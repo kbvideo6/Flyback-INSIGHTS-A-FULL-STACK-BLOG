@@ -1,7 +1,7 @@
 // AdminDashboard — Live articles table fetched from the backend
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import api from '../../lib/api'
+import { supabase } from '../../lib/supabase'
 
 // ── Status badge styles ───────────────────────────────────────────────────
 const STATUS_STYLES = {
@@ -28,14 +28,13 @@ const AdminDashboard = () => {
     const fetchArticles = useCallback(async () => {
         setIsLoading(true)
         setError(null)
-        try {
-            const data = await api.get('/api/v1/admin/articles')
-            setArticles(data)
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setIsLoading(false)
-        }
+        const { data, error: err } = await supabase
+            .from('articles')
+            .select('id, title, slug, is_published, published_at, categories(name)')
+            .order('created_at', { ascending: false })
+        setIsLoading(false)
+        if (err) { setError(err.message); return }
+        setArticles(data ?? [])
     }, [])
 
     useEffect(() => {
@@ -46,7 +45,8 @@ const AdminDashboard = () => {
         if (!window.confirm(`Delete "${article.title}"? This cannot be undone.`)) return
         setDeletingId(article.id)
         try {
-            await api.delete(`/api/v1/admin/articles/${article.id}`)
+            const { error: err } = await supabase.from('articles').delete().eq('id', article.id)
+            if (err) throw new Error(err.message)
             // Optimistic removal
             setArticles((prev) => prev.filter((a) => a.id !== article.id))
         } catch (err) {
@@ -121,20 +121,25 @@ const AdminDashboard = () => {
 
                                     {/* Category */}
                                     <td className="px-6 py-4 text-gray-400 text-xs">
-                                        {article.category ?? '—'}
+                                        {article.category?.name ?? '—'}
                                     </td>
 
                                     {/* Status badge */}
                                     <td className="px-6 py-4">
-                                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${STATUS_STYLES[article.status] ?? STATUS_STYLES.draft}`}>
-                                            {article.status}
-                                        </span>
+                                        {(() => {
+                                            const status = article.is_published ? 'published' : 'draft'
+                                            return (
+                                                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${STATUS_STYLES[status] ?? STATUS_STYLES.draft}`}>
+                                                    {status}
+                                                </span>
+                                            )
+                                        })()}
                                     </td>
 
                                     {/* Date */}
                                     <td className="px-6 py-4 text-gray-500 text-xs hidden sm:table-cell">
-                                        {article.publishedAt
-                                            ? new Date(article.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                                        {article.published_at
+                                            ? new Date(article.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
                                             : '—'
                                         }
                                     </td>

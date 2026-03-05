@@ -1,15 +1,19 @@
 // Topics Page — Grid of all articles with category filter
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import articles, { categories, getArticleUrl } from '../constants/articles'
+import useArticles from '../hooks/useArticles'
+import useCategories from '../hooks/useCategories'
+import { getArticleUrl } from '../constants/articles'
 
 const Topics = () => {
     const [activeCategory, setActiveCategory] = useState('All')
+    const { articles, isLoading } = useArticles()
+    const { categories } = useCategories()
 
     const filtered =
         activeCategory === 'All'
             ? articles
-            : articles.filter((a) => a.category === activeCategory)
+            : articles.filter((a) => a.categories?.name === activeCategory)
 
     return (
         <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 py-12">
@@ -40,39 +44,55 @@ const Topics = () => {
                 ))}
             </div>
 
-            {/* ── Article Grid ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.map((article) => (
-                    <Link
-                        key={article.id}
-                        to={getArticleUrl(article)}
-                        className="glass-panel p-5 group cursor-pointer hover:border-primary/30 transition-all duration-500 block"
-                    >
-                        {/* Image placeholder */}
-                        <div className="relative overflow-hidden rounded-xl mb-4 aspect-video bg-gray-800">
-                            <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 group-hover:scale-110 transition-transform duration-700" />
+            {/* ── Loading skeleton ── */}
+            {isLoading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="glass-panel p-5 animate-pulse">
+                            <div className="rounded-xl mb-4 aspect-video bg-white/5" />
+                            <div className="h-3 bg-white/5 rounded-full w-20 mb-3" />
+                            <div className="h-5 bg-white/5 rounded w-3/4 mb-2" />
+                            <div className="h-4 bg-white/5 rounded w-full" />
                         </div>
+                    ))}
+                </div>
+            )}
 
-                        {/* Category badge */}
-                        <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.15em] text-blue-300 uppercase bg-blue-900/40 border border-blue-500/20 rounded-full">
-                            {article.category}
-                        </span>
+            {/* ── Article Grid ── */}
+            {!isLoading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filtered.map((article) => (
+                        <Link
+                            key={article.id}
+                            to={getArticleUrl(article)}
+                            className="glass-panel p-5 group cursor-pointer hover:border-primary/30 transition-all duration-500 block"
+                        >
+                            {/* Image placeholder */}
+                            <div className="relative overflow-hidden rounded-xl mb-4 aspect-video bg-gray-800">
+                                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 group-hover:scale-110 transition-transform duration-700" />
+                            </div>
 
-                        {/* Title */}
-                        <h3 className="font-display text-xl font-bold text-white leading-tight mb-2 group-hover:text-primary transition-colors">
-                            {article.title}
-                        </h3>
+                            {/* Category badge */}
+                            <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.15em] text-blue-300 uppercase bg-blue-900/40 border border-blue-500/20 rounded-full">
+                                {article.categories?.name}
+                            </span>
 
-                        {/* Description */}
-                        <p className="text-gray-400 text-sm line-clamp-2">
-                            {article.description}
-                        </p>
-                    </Link>
-                ))}
-            </div>
+                            {/* Title */}
+                            <h3 className="font-display text-xl font-bold text-white leading-tight mb-2 group-hover:text-primary transition-colors">
+                                {article.title}
+                            </h3>
+
+                            {/* Description */}
+                            <p className="text-gray-400 text-sm line-clamp-2">
+                                {article.excerpt}
+                            </p>
+                        </Link>
+                    ))}
+                </div>
+            )}
 
             {/* ── Empty state ── */}
-            {filtered.length === 0 && (
+            {!isLoading && filtered.length === 0 && (
                 <div className="text-center py-20">
                     <p className="text-gray-500 text-lg">No articles found in this category.</p>
                 </div>
