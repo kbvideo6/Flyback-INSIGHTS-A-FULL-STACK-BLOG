@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import useArticle from '../hooks/useArticle'
 import useArticles from '../hooks/useArticles'
 import { getArticleUrl } from '../constants/articles'
+import ArticleBody from '../components/layout/ArticleBody'
 
 const ArticlePage = () => {
     const { slug } = useParams()
@@ -96,39 +97,10 @@ const ArticlePage = () => {
             </div>
 
             {/* ── Article Body ── */}
-            <div className="space-y-6">
-                {/* Structured blocks (local fallback data) */}
-                {article.body ? (
-                    article.body.map((block, index) => {
-                        if (block.type === 'heading') {
-                            return (
-                                <h2
-                                    key={index}
-                                    className="font-display text-2xl font-bold text-white mt-10 mb-4"
-                                >
-                                    {block.content}
-                                </h2>
-                            )
-                        }
-                        return (
-                            <p
-                                key={index}
-                                className="text-gray-300 text-base lg:text-lg leading-relaxed"
-                            >
-                                {block.content}
-                            </p>
-                        )
-                    })
-                ) : article.content ? (
-                    /* HTML/Markdown string from the backend */
-                    <div
-                        className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-a:text-primary"
-                        dangerouslySetInnerHTML={{ __html: article.content }}
-                    />
-                ) : (
-                    <p className="text-gray-400 text-lg italic">Full article content coming soon.</p>
-                )}
-            </div>
+            <ArticleBody
+                content={article.content ?? article.body ?? null}
+                imageUrl={article.image_url ?? null}
+            />
 
             {/* ── Footer / Related section ── */}
             <div className="mt-16 pt-8 border-t border-glass-border">

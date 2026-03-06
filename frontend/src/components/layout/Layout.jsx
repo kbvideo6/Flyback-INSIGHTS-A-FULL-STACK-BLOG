@@ -11,7 +11,7 @@ const Layout = () => {
             <Navbar />
 
             {/* The relative wrapper is the coordinate system origin (0,0) for the nodes. */}
-            <main className="relative flex-grow w-full max-w-[1400px] mx-auto min-h-[1200px] py-10">
+            <main className="relative flex-grow w-full max-w-[1400px] mx-auto lg:min-h-[1200px] py-4 lg:py-10">
                 <Outlet />
             </main>
 
