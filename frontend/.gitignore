@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files — NEVER commit secrets
+.env
+.env.production
+
+# Seed scripts — server-only, not needed in git
+seed-articles.mjs
