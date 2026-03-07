@@ -54,7 +54,6 @@ const categoryColor = (name = '') =>
 const Chip = ({ label, color = 'rgba(59,130,246,0.85)', small = false }) => (
     <span style={{
         background: color,
-        backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
         color: '#fff',
         fontSize: small ? '0.52rem' : '0.57rem',
         fontWeight: 700,
@@ -99,8 +98,7 @@ const ShelfCard = memo(({ node, isActive, onTap }) => {
 
             <article style={{
                 position: 'relative', zIndex: 1,
-                background: 'rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+                background: 'rgba(30,35,45,0.8)',
                 border: `1px solid ${isActive ? 'rgba(99,149,255,0.45)' : 'rgba(255,255,255,0.07)'}`,
                 borderRadius: '1.35rem', overflow: 'hidden',
                 height: isHero ? '58vw' : '46vw',
@@ -177,8 +175,7 @@ const GridCard = memo(({ article, tall }) => {
         <Link to={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
             <article
                 style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)',
+                    background: 'rgba(25,30,40,0.8)',
                     border: '1px solid rgba(255,255,255,0.07)',
                     borderRadius: '1.1rem', overflow: 'hidden',
                     height: tall ? '230px' : '170px',
