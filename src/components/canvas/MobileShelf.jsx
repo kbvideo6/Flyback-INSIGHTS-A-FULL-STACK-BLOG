@@ -91,8 +91,8 @@ const ShelfCard = memo(({ node, isActive, onTap }) => {
             {isActive && (
                 <div style={{
                     position: 'absolute', inset: '-4px', borderRadius: '1.6rem',
-                    background: 'linear-gradient(135deg, rgba(59,130,246,0.4), rgba(139,92,246,0.3))',
-                    filter: 'blur(12px)', zIndex: 0, pointerEvents: 'none',
+                    boxShadow: '0 0 20px 8px rgba(59,130,246,0.3)',
+                    zIndex: 0, pointerEvents: 'none',
                 }} />
             )}
 
@@ -110,7 +110,7 @@ const ShelfCard = memo(({ node, isActive, onTap }) => {
             }}>
                 <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                     {img ? (
-                        <img src={img} alt={node.title} loading="lazy" style={{
+                        <img src={img} alt={node.title} loading="lazy" decoding="async" style={{
                             width: '100%', height: '100%', objectFit: 'cover',
                             transition: 'transform 0.6s ease',
                             transform: isActive ? 'scale(1.07)' : 'scale(1)',
@@ -303,14 +303,22 @@ const MobileShelf = ({ nodes }) => {
     const { articles: feedArticles, isLoading, hasMore, loadMore } = useArticlesFeed(carouselSlugs, 8)
 
     const updateActive = useCallback(() => {
-        const el = trackRef.current; if (!el) return
-        const center = el.scrollLeft + el.clientWidth / 2
-        let closest = 0, minDist = Infinity
-        Array.from(el.children).forEach((child, i) => {
-            const dist = Math.abs(child.offsetLeft + child.offsetWidth / 2 - center)
-            if (dist < minDist) { minDist = dist; closest = i }
+        if (!trackRef.current) return
+
+        requestAnimationFrame(() => {
+            const el = trackRef.current
+            if (!el) return
+
+            const center = el.scrollLeft + el.clientWidth / 2
+            let closest = 0, minDist = Infinity
+
+            Array.from(el.children).forEach((child, i) => {
+                const dist = Math.abs(child.offsetLeft + child.offsetWidth / 2 - center)
+                if (dist < minDist) { minDist = dist; closest = i }
+            })
+
+            setActiveIdx(prev => prev === closest ? prev : closest)
         })
-        setActiveIdx(closest)
     }, [])
 
     useEffect(() => {
