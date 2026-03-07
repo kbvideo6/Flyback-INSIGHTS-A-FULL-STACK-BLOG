@@ -1,27 +1,166 @@
 // Footer Component — Newsletter + legal links
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import logoIcon from '../../assets/logo-icon.webp'
 import logoIconFallback from '../../assets/logo-icon.png'
 
-const Footer = () => {
-    const [shareState, setShareState] = useState('idle')
+/* ══════════════════════════════════════════════════════════════
+   MODAL OVERLAY COMPONENT
+══════════════════════════════════════════════════════════════ */
+const ModalOverlay = ({ onClose, children }) => {
+    const overlayRef = useRef(null)
 
-    const handleShare = async (e) => {
-        e.preventDefault()
+    useEffect(() => {
+        const handler = (e) => { if (e.key === 'Escape') onClose() }
+        window.addEventListener('keydown', handler)
+        return () => window.removeEventListener('keydown', handler)
+    }, [onClose])
+
+    const handleClick = (e) => { if (e.target === overlayRef.current) onClose() }
+
+    return (
+        <div ref={overlayRef} onClick={handleClick} style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+            animation: 'modal-fade-in 0.2s ease', padding: '1rem'
+        }}>
+            <div style={{
+                width: '100%', maxWidth: '360px',
+                background: 'rgba(20,25,35,0.95)',
+                backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem',
+                padding: '1.5rem', marginBottom: 'env(safe-area-inset-bottom, 1rem)',
+                boxShadow: '0 20px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1)',
+                animation: 'modal-slide-up 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+                position: 'relative'
+            }}>
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors bg-transparent border-none p-1 outline-none">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                {children}
+            </div>
+            <style>{`
+                @keyframes modal-fade-in { from{opacity:0} to{opacity:1} }
+                @keyframes modal-slide-up { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+                @media (min-width: 640px) {
+                    div[style*="alignItems: 'flex-end'"] { align-items: center !important; }
+                }
+            `}</style>
+        </div>
+    )
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SHARE MODAL
+══════════════════════════════════════════════════════════════ */
+const ShareModal = ({ onClose }) => {
+    const url = window.location.href
+    const text = "Check out this article on Flyback Electronics!"
+    const encodedUrl = encodeURIComponent(url)
+    const encodedText = encodeURIComponent(text)
+
+    const [copied, setCopied] = useState(false)
+
+    const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(window.location.href)
-            setShareState('copied')
-            setTimeout(() => setShareState('idle'), 2000)
-        } catch (err) {
-            console.log('Clipboard API failed', err)
+            await navigator.clipboard.writeText(url)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        } catch (e) {
+            console.error(e)
         }
     }
 
-    const handleLanguage = (e) => {
-        e.preventDefault()
-        alert('🌐 Localization and multi-language support is arriving in our next major update!')
-    }
+    const shareLinks = [
+        { name: 'X / Twitter', url: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`, icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>, color: 'hover:bg-[#1DA1F2] hover:text-white hover:border-[#1DA1F2]/50' },
+        { name: 'WhatsApp', url: `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.386 0 12.031c0 2.126.554 4.195 1.606 6.01L.52 22.012l4.086-1.071A11.964 11.964 0 0012.031 24c6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm0 21.996c-1.803 0-3.571-.485-5.118-1.402l-.367-.217-3.037.796.812-2.96-.237-.378A9.975 9.975 0 012.012 12.03c0-5.539 4.512-10.051 10.05-10.051s10.051 4.512 10.051 10.05-4.512 10.038-10.082 10.018v.018zm5.513-7.518c-.302-.15-1.791-.884-2.069-.985-.278-.101-.482-.15-.683.15-.201.302-.782.985-.963 1.186-.18.201-.362.226-.663.076-.302-.15-1.28-.472-2.438-1.503-.902-.803-1.51-1.795-1.69-2.096-.18-.302-.02-.463.13-.614.136-.136.302-.352.453-.528.151-.176.201-.302.302-.503.1-.201.05-.377-.025-.528-.075-.15-.683-1.649-.938-2.257-.247-.59-.5-.51-.683-.52-.18-.01-.383-.01-.583-.01s-.524.075-.798.377c-.276.302-1.054 1.031-1.054 2.515s1.08 2.917 1.231 3.118c.151.201 2.124 3.243 5.144 4.545 1.581.683 2.393.593 3.292.493.818-.09 1.791-.734 2.043-1.443.251-.709.251-1.317.176-1.443-.075-.126-.276-.201-.58-.352z" /></svg>, color: 'hover:bg-[#25D366] hover:text-white hover:border-[#25D366]/50' },
+        { name: 'Telegram', url: `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`, icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.589.295l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.817.939z" /></svg>, color: 'hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc]/50' },
+        { name: 'Email', url: `mailto:?subject=${encodedText}&body=${encodedUrl}`, icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>, color: 'hover:bg-red-500 hover:text-white hover:border-red-500/50' },
+    ]
+
+    return (
+        <ModalOverlay onClose={onClose}>
+            <h3 className="text-white font-display text-lg font-bold mb-5 pl-1">Share this link</h3>
+
+            <div className="grid grid-cols-4 gap-3 mb-6 relative z-10 w-full">
+                {shareLinks.map(link => (
+                    <a key={link.name} href={link.url} target="_blank" rel="noreferrer"
+                        className={`flex flex-col items-center justify-center h-14 rounded-xl bg-white/5 border border-white/5 text-gray-400 transition-all duration-200 outline-none ${link.color}`}
+                        title={link.name}>
+                        {link.icon}
+                    </a>
+                ))}
+            </div>
+
+            <div className="relative">
+                <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-lg p-1.5 focus-within:border-primary/50 transition-colors w-full">
+                    <input type="text" readOnly value={url}
+                        className="bg-transparent text-gray-400 text-xs flex-1 px-3 outline-none w-full font-mono overflow-ellipsis"
+                        onClick={e => e.target.select()}
+                    />
+                    <button onClick={handleCopy}
+                        className="bg-primary hover:bg-blue-600 text-white text-xs px-4 py-2 rounded-md transition-colors font-medium whitespace-nowrap outline-none">
+                        {copied ? 'Copied!' : 'Copy'}
+                    </button>
+                </div>
+            </div>
+        </ModalOverlay>
+    )
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LANGUAGE MODAL
+══════════════════════════════════════════════════════════════ */
+const LanguageModal = ({ onClose }) => {
+    return (
+        <ModalOverlay onClose={onClose}>
+            <div className="flex items-center gap-3 mb-5 pl-1">
+                <div className="w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 className="text-white font-display text-lg font-bold leading-tight">Localization</h3>
+                    <p className="text-gray-400 text-[11px] mt-0.5">Multi-language support is arriving soon.</p>
+                </div>
+            </div>
+
+            <div className="flex flex-col gap-2 relative z-10">
+                <button className="flex items-center justify-between w-full p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-left transition-colors cursor-default outline-none">
+                    <span className="text-white font-medium text-sm">English (US)</span>
+                    <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                </button>
+                <div className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 border border-transparent text-left opacity-50 pointer-events-none">
+                    <span className="text-gray-300 font-medium text-sm">Español</span>
+                    <span className="text-[9px] uppercase tracking-wider font-bold text-gray-400 bg-white/10 px-2 py-0.5 rounded">Upcoming</span>
+                </div>
+                <div className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 border border-transparent text-left opacity-50 pointer-events-none">
+                    <span className="text-gray-300 font-medium text-sm">Français</span>
+                    <span className="text-[9px] uppercase tracking-wider font-bold text-gray-400 bg-white/10 px-2 py-0.5 rounded">Upcoming</span>
+                </div>
+                <div className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 border border-transparent text-left opacity-50 pointer-events-none">
+                    <span className="text-gray-300 font-medium text-sm">日本語</span>
+                    <span className="text-[9px] uppercase tracking-wider font-bold text-gray-400 bg-white/10 px-2 py-0.5 rounded">Upcoming</span>
+                </div>
+            </div>
+
+            <button onClick={onClose} className="w-full mt-5 p-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-colors outline-none border border-transparent hover:border-white/10">
+                Close
+            </button>
+        </ModalOverlay>
+    )
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MAIN FOOTER
+══════════════════════════════════════════════════════════════ */
+const Footer = () => {
+    const [showShareModal, setShowShareModal] = useState(false)
+    const [showLanguageModal, setShowLanguageModal] = useState(false)
 
     return (
         <footer className="mt-24 border-t border-glass-border bg-black/40 backdrop-blur-2xl py-12">
@@ -76,20 +215,15 @@ const Footer = () => {
                             </svg>
                         </a>
 
-                        {/* Share Page (copies URL) */}
-                        <button onClick={handleShare} className="relative text-gray-500 hover:text-primary transition-colors flex items-center justify-center outline-none" aria-label="Share">
+                        {/* Share Page Modal Trigger */}
+                        <button onClick={(e) => { e.preventDefault(); setShowShareModal(true); }} className="relative text-gray-500 hover:text-primary transition-colors flex items-center justify-center outline-none" aria-label="Share">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                             </svg>
-                            {shareState === 'copied' && (
-                                <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] px-2.5 py-1 rounded shadow-lg whitespace-nowrap animate-bounce font-medium tracking-wide">
-                                    Link Copied!
-                                </span>
-                            )}
                         </button>
 
-                        {/* Language */}
-                        <button onClick={handleLanguage} className="text-gray-500 hover:text-primary transition-colors flex items-center justify-center outline-none" aria-label="Language">
+                        {/* Language Modal Trigger */}
+                        <button onClick={(e) => { e.preventDefault(); setShowLanguageModal(true); }} className="text-gray-500 hover:text-primary transition-colors flex items-center justify-center outline-none" aria-label="Language">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                             </svg>
@@ -98,6 +232,10 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modals outside of the layout flow */}
+            {showShareModal && <ShareModal onClose={() => setShowShareModal(false)} />}
+            {showLanguageModal && <LanguageModal onClose={() => setShowLanguageModal(false)} />}
         </footer>
     )
 }
