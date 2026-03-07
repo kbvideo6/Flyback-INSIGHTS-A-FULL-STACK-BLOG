@@ -9,10 +9,16 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Get active session on load
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-            setLoading(false)
-        })
+        supabase.auth.getSession()
+            .then(({ data: { session } }) => {
+                setSession(session)
+                setLoading(false)
+            })
+            .catch((error) => {
+                console.error("Supabase auth error (likely missing credentials):", error)
+                setSession(null)
+                setLoading(false)
+            })
 
         // Listen for auth changes (login, logout, token refresh)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
