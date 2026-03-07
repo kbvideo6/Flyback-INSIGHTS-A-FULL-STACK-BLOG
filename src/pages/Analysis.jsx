@@ -2,8 +2,10 @@
 import { Link } from 'react-router-dom'
 import useArticles from '../hooks/useArticles'
 import { getArticleUrl } from '../constants/articles'
+import usePageTitle from '../hooks/usePageTitle'
 
 const Analysis = () => {
+    usePageTitle('Analysis')
     const { articles, isLoading } = useArticles()
     const analysisArticles = articles.filter((a) => a.categories?.name === 'Analysis')
 

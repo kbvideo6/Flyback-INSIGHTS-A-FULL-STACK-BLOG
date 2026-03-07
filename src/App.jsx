@@ -9,6 +9,9 @@ import Analysis from './pages/Analysis'
 import ArticlePage from './pages/ArticlePage'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Careers from './pages/Careers'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import ArchiveAtlas from './pages/ArchiveAtlas'
 
 // ── Admin layout & pages ─────────────────────────────────────────────────
 import AdminLayout from './pages/admin/AdminLayout'
@@ -35,6 +38,9 @@ function App() {
             <Route path="article/:slug" element={<ArticlePage />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
+            <Route path="careers" element={<Careers />} />
+            <Route path="privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="archive" element={<ArchiveAtlas />} />
           </Route>
 
           {/* ── Admin: public login page ── */}

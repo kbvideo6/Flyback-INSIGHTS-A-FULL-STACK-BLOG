@@ -305,9 +305,6 @@ const MobileShelf = ({ nodes }) => {
     // Feed: paginated, excludes carousel slugs
     const { articles: feedArticles, isLoading, hasMore, loadMore } = useArticlesFeed(carouselSlugs, 8)
 
-    /* ── Carousel gesture state ── */
-    const drag = useRef({ active: false, startX: 0, startScroll: 0, velX: 0, lastX: 0, lastT: 0, rafId: null })
-
     const updateActive = useCallback(() => {
         const el = trackRef.current; if (!el) return
         const center = el.scrollLeft + el.clientWidth / 2
@@ -319,58 +316,11 @@ const MobileShelf = ({ nodes }) => {
         setActiveIdx(closest)
     }, [])
 
-    const applyMomentum = useCallback(() => {
-        const el = trackRef.current; if (!el) return
-        const d = drag.current
-        if (Math.abs(d.velX) < 0.5) { updateActive(); return }
-        el.scrollLeft += d.velX; d.velX *= 0.93
-        d.rafId = requestAnimationFrame(applyMomentum)
-    }, [updateActive])
-
-    const onPointerDown = useCallback((e) => {
-        cancelAnimationFrame(drag.current.rafId)
-        const x = e.touches ? e.touches[0].clientX : e.clientX
-        drag.current = { ...drag.current, active: true, startX: x, startScroll: trackRef.current.scrollLeft, velX: 0, lastX: x, lastT: Date.now() }
-        trackRef.current.style.scrollSnapType = 'none'
-    }, [])
-
-    const onPointerMove = useCallback((e) => {
-        if (!drag.current.active) return
-        e.preventDefault()
-        const x = e.touches ? e.touches[0].clientX : e.clientX
-        const now = Date.now(), dt = now - drag.current.lastT || 16
-        drag.current.velX = (drag.current.lastX - x) / dt * 16
-        drag.current.lastX = x; drag.current.lastT = now
-        trackRef.current.scrollLeft = drag.current.startScroll + (drag.current.startX - x)
-    }, [])
-
-    const onPointerUp = useCallback(() => {
-        if (!drag.current.active) return
-        drag.current.active = false
-        trackRef.current.style.scrollSnapType = 'x mandatory'
-        drag.current.rafId = requestAnimationFrame(applyMomentum)
-    }, [applyMomentum])
-
     useEffect(() => {
         const el = trackRef.current; if (!el) return
-        el.addEventListener('touchstart', onPointerDown, { passive: true })
-        el.addEventListener('touchmove', onPointerMove, { passive: false })
-        el.addEventListener('touchend', onPointerUp)
-        el.addEventListener('mousedown', onPointerDown)
-        window.addEventListener('mousemove', onPointerMove)
-        window.addEventListener('mouseup', onPointerUp)
         el.addEventListener('scroll', updateActive, { passive: true })
-        return () => {
-            el.removeEventListener('touchstart', onPointerDown)
-            el.removeEventListener('touchmove', onPointerMove)
-            el.removeEventListener('touchend', onPointerUp)
-            el.removeEventListener('mousedown', onPointerDown)
-            window.removeEventListener('mousemove', onPointerMove)
-            window.removeEventListener('mouseup', onPointerUp)
-            el.removeEventListener('scroll', updateActive)
-            cancelAnimationFrame(drag.current.rafId)
-        }
-    }, [onPointerDown, onPointerMove, onPointerUp, updateActive])
+        return () => el.removeEventListener('scroll', updateActive)
+    }, [updateActive])
 
     const scrollToCard = (idx) => {
         const el = trackRef.current; if (!el) return
@@ -380,7 +330,7 @@ const MobileShelf = ({ nodes }) => {
     }
 
     const handleCardTap = (node) => {
-        if (!drag.current.active && node.slug) navigate(`/article/${node.slug}`)
+        if (node.slug) navigate(`/article/${node.slug}`)
     }
 
     if (!articleNodes.length) return null

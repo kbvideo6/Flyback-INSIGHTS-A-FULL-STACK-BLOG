@@ -1,4 +1,8 @@
 // Footer Component — Newsletter + legal links
+import { Link } from 'react-router-dom'
+import logoIcon from '../../assets/logo-icon.webp'
+import logoIconFallback from '../../assets/logo-icon.png'
+
 const Footer = () => {
     return (
         <footer className="mt-24 border-t border-glass-border bg-black/40 backdrop-blur-2xl py-12">
@@ -6,17 +10,29 @@ const Footer = () => {
 
                 {/* ── Left: Legal links ── */}
                 <div className="flex items-center gap-x-6 text-xs font-medium text-gray-500">
-                    <a href="#" className="hover:text-primary transition-colors">Contact</a>
-                    <a href="#" className="hover:text-primary transition-colors">Careers</a>
-                    <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-primary transition-colors">Archive Atlas</a>
+                    <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
+                    <Link to="/careers" className="hover:text-primary transition-colors">Careers</Link>
+                    <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+                    <Link to="/archive" className="hover:text-primary transition-colors">Archive Atlas</Link>
                 </div>
 
-                {/* ── Right: Copyright + social icons ── */}
+                {/* ── Right: Logo + Copyright + social icons ── */}
                 <div className="text-center md:text-right">
-                    <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-widest">
-                        &copy; {new Date().getFullYear()} Flyback INSIGHTS
-                    </p>
+                    <div className="flex items-center justify-center md:justify-end gap-2 mb-2">
+                        <picture>
+                            <source srcSet={logoIcon} type="image/webp" />
+                            <img
+                                src={logoIconFallback}
+                                alt="Flyback Electronics"
+                                width={18}
+                                height={18}
+                                className="w-[18px] h-[18px] object-contain opacity-50"
+                            />
+                        </picture>
+                        <p className="text-[10px] text-gray-600 uppercase tracking-widest">
+                            &copy; {new Date().getFullYear()} Flyback Electronics
+                        </p>
+                    </div>
                     <div className="flex justify-center md:justify-end gap-x-4">
                         <a href="#" className="text-gray-500 hover:text-primary transition-colors" aria-label="Hub">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -2,8 +2,10 @@
 import { Link } from 'react-router-dom'
 import useArticles from '../hooks/useArticles'
 import { getArticleUrl } from '../constants/articles'
+import usePageTitle from '../hooks/usePageTitle'
 
 const DeepDives = () => {
+    usePageTitle('Deep Dives')
     const { articles, isLoading } = useArticles()
 
     const heroArticles = articles.filter((a) => a.is_featured)

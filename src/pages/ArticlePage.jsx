@@ -4,11 +4,15 @@ import useArticle from '../hooks/useArticle'
 import useArticles from '../hooks/useArticles'
 import { getArticleUrl } from '../constants/articles'
 import ArticleBody from '../components/layout/ArticleBody'
+import usePageTitle from '../hooks/usePageTitle'
 
 const ArticlePage = () => {
     const { slug } = useParams()
     const { article, isLoading, error } = useArticle(slug)
     const { articles } = useArticles()
+
+    // Sets tab title dynamically — undefined while loading, real title once resolved
+    usePageTitle(article?.title)
 
     // ── Loading state ──
     if (isLoading) {
