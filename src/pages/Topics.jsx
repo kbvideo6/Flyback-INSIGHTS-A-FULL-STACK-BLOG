@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import useArticles from '../hooks/useArticles'
 import useTopicTree from '../hooks/useTopicTree'
 import { getArticleUrl } from '../constants/articles'
-import usePageTitle from '../hooks/usePageTitle'
+import useSEO from '../hooks/useSEO'
 
 // ── Topic accent colours (fallback if DB color is absent) ──────────────
 const TOPIC_COLORS = {
@@ -59,7 +59,7 @@ const Skeleton = () => (
 
 // ── Main Topics page ────────────────────────────────────────────────────
 const Topics = () => {
-    usePageTitle('Topics')
+    useSEO({ title: 'Topics', description: 'Browse all articles by topic — Electronics, AI, Robotics, Power Systems, and more.' })
     const { topicTree, isLoading: treeLoading } = useTopicTree()
     const { articles, isLoading: articlesLoading } = useArticles()
 

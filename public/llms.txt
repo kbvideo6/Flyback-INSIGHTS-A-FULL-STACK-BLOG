@@ -1,0 +1,36 @@
+# Flyback Electronics
+
+> In-depth electronics insights, deep dives, analysis and emerging trends in semiconductors, AI, and robotics.
+
+Flyback Electronics is an independent publication covering electronics engineering, semiconductor markets, AI/ML hardware, robotics, and power systems. Our editorial team includes semiconductor researchers, embedded systems engineers, and market analysts.
+
+## Content Sections
+
+- [Home](https://flybackelectronics.com/): Spatial atlas of latest articles and trends
+- [Topics](https://flybackelectronics.com/topics): Browse all content by topic — Electronics, AI, Robotics
+- [Deep Dives](https://flybackelectronics.com/deep-dives): Long-form technical explorations
+- [Analysis](https://flybackelectronics.com/analysis): Data-driven market reports and forecasts
+- [Archive](https://flybackelectronics.com/archive): Complete chronological archive of all articles
+- [About](https://flybackelectronics.com/about): Our mission, team, and editorial charter
+- [Contact](https://flybackelectronics.com/contact): Editorial inquiries, press, partnerships
+
+## Machine-Readable Feeds
+
+- RSS Feed: https://flybackelectronics.com/feed.xml
+- AI JSON Feed: https://flybackelectronics.com/ai.json
+- Sitemap: https://flybackelectronics.com/sitemap.xml
+
+## Topics Covered
+
+- Power Electronics (flyback converters, switching regulators, GaN/SiC)
+- Semiconductors (fab processes, EUV lithography, chip design)
+- Embedded Systems (microcontrollers, RTOS, IoT protocols)
+- Artificial Intelligence (edge AI, neural network hardware, TPUs)
+- Robotics (motor control, sensor fusion, autonomy)
+- Market Analysis (supply chain, fab economics, earnings analysis)
+
+## Contact
+
+- Editorial: editorial@flybackelectronics.com
+- Press: press@flybackelectronics.com
+- General: hello@flybackelectronics.com

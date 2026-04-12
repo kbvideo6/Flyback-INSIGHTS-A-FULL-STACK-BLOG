@@ -1,0 +1,214 @@
+{
+  "_meta": {
+    "name": "Flyback Electronics",
+    "description": "In-depth electronics insights, deep dives, analysis and emerging trends in semiconductors, AI, and robotics.",
+    "url": "https://flybackelectronics.com",
+    "feed_url": "https://flybackelectronics.com/ai.json",
+    "rss_url": "https://flybackelectronics.com/feed.xml",
+    "generated_at": "2026-04-12T18:45:44.975Z",
+    "total_articles": 20,
+    "contact": "hello@flybackelectronics.com"
+  },
+  "articles": [
+    {
+      "title": "AI Chip Market Growth: 2024–2028 Forecast",
+      "url": "https://flybackelectronics.com/article/ai-chip-market-growth-20242028-forecast",
+      "slug": "ai-chip-market-growth-20242028-forecast",
+      "excerpt": "Analyzing the $120B trajectory of AI accelerator silicon and who stands to dominate.",
+      "author": "Alex Chen",
+      "category": "AI Hardware",
+      "published_at": "2026-03-05T11:13:48.581",
+      "read_time_minutes": 9
+    },
+    {
+      "title": "RISC-V vs ARM: The Battle for Edge Dominance",
+      "url": "https://flybackelectronics.com/article/risc-v-vs-arm-the-battle-for-edge-dominance",
+      "slug": "risc-v-vs-arm-the-battle-for-edge-dominance",
+      "excerpt": "How the open ISA is reshaping the microcontroller and embedded processor landscape.",
+      "author": "Maya Patel",
+      "category": "Edge Computing",
+      "published_at": "2026-03-02T11:13:48.581",
+      "read_time_minutes": 11
+    },
+    {
+      "title": "Semiconductor Supply Chain Risk Report 2025",
+      "url": "https://flybackelectronics.com/article/semiconductor-supply-chain-risk-report-2025",
+      "slug": "semiconductor-supply-chain-risk-report-2025",
+      "excerpt": "Mapping geopolitical dependencies and single-point failures in global chip manufacturing.",
+      "author": "Jordan Lee",
+      "category": "Semiconductors",
+      "published_at": "2026-02-27T11:13:48.581",
+      "read_time_minutes": 13
+    },
+    {
+      "title": "The Silicon Brain: Neuromorphic Computing Explained",
+      "url": "https://flybackelectronics.com/article/the-silicon-brain-neuromorphic-computing-explained",
+      "slug": "the-silicon-brain-neuromorphic-computing-explained",
+      "excerpt": "From neuromorphic chips to photonic computing — the frontier beyond von Neumann architecture.",
+      "author": "Sam Torres",
+      "category": "Neuromorphic",
+      "published_at": "2026-02-24T11:13:48.581",
+      "read_time_minutes": 10
+    },
+    {
+      "title": "Graphene's Promise for Flexible Electronics",
+      "url": "https://flybackelectronics.com/article/graphenes-promise-for-flexible-electronics",
+      "slug": "graphenes-promise-for-flexible-electronics",
+      "excerpt": "Moving beyond the hype: manufacturing challenges and the reality of flexible screens.",
+      "author": "Alex Chen",
+      "category": "Materials",
+      "published_at": "2026-02-21T11:13:48.581",
+      "read_time_minutes": 7
+    },
+    {
+      "title": "Power Electronics Revolution: GaN and SiC Take Over",
+      "url": "https://flybackelectronics.com/article/power-electronics-revolution-gan-and-sic-take-over",
+      "slug": "power-electronics-revolution-gan-and-sic-take-over",
+      "excerpt": "Wide-bandgap semiconductors are displacing silicon in EV chargers, solar inverters, and data centres.",
+      "author": "Maya Patel",
+      "category": "Power Electronics",
+      "published_at": "2026-02-18T11:13:48.581",
+      "read_time_minutes": 8
+    },
+    {
+      "title": "The HBM3 Memory Wars: Samsung vs SK Hynix vs Micron",
+      "url": "https://flybackelectronics.com/article/the-hbm3-memory-wars-samsung-vs-sk-hynix-vs-micron",
+      "slug": "the-hbm3-memory-wars-samsung-vs-sk-hynix-vs-micron",
+      "excerpt": "AI training clusters demand memory bandwidth that GDDR6 cannot provide. Enter High Bandwidth Memory.",
+      "author": "Jordan Lee",
+      "category": "AI Hardware",
+      "published_at": "2026-02-15T11:13:48.581",
+      "read_time_minutes": 9
+    },
+    {
+      "title": "Quantum Computing: Where Are We Actually?",
+      "url": "https://flybackelectronics.com/article/quantum-computing-where-are-we-actually",
+      "slug": "quantum-computing-where-are-we-actually",
+      "excerpt": "Cutting through the noise on qubit counts, error correction, and when quantum advantage will matter.",
+      "author": "Sam Torres",
+      "category": "Machine Learning",
+      "published_at": "2026-02-12T11:13:48.581",
+      "read_time_minutes": 12
+    },
+    {
+      "title": "PCB Design in 2025: Signal Integrity at 100+ Gbps",
+      "url": "https://flybackelectronics.com/article/pcb-design-in-2025-signal-integrity-at-100-gbps",
+      "slug": "pcb-design-in-2025-signal-integrity-at-100-gbps",
+      "excerpt": "High-speed serial design challenges, material choices, and simulation-driven layout strategies.",
+      "author": "Alex Chen",
+      "category": "PCB Design",
+      "published_at": "2026-02-09T11:13:48.581",
+      "read_time_minutes": 14
+    },
+    {
+      "title": "Open-Source EDA Tools: The KiCad Revolution",
+      "url": "https://flybackelectronics.com/article/open-source-eda-tools-the-kicad-revolution",
+      "slug": "open-source-eda-tools-the-kicad-revolution",
+      "excerpt": "How free PCB design software went from hobbyist curiosity to professional-grade production tool.",
+      "author": "Maya Patel",
+      "category": "PCB Design",
+      "published_at": "2026-02-06T11:13:48.581",
+      "read_time_minutes": 6
+    },
+    {
+      "title": "EV Battery Technology: Solid-State vs Lithium-Ion",
+      "url": "https://flybackelectronics.com/article/ev-battery-technology-solid-state-vs-lithium-ion",
+      "slug": "ev-battery-technology-solid-state-vs-lithium-ion",
+      "excerpt": "Timeline, energy density claims, and the manufacturing challenges of solid-state batteries.",
+      "author": "Jordan Lee",
+      "category": "Materials",
+      "published_at": "2026-02-03T11:13:48.581",
+      "read_time_minutes": 10
+    },
+    {
+      "title": "Radar on a Chip: How mmWave Sensing Works",
+      "url": "https://flybackelectronics.com/article/radar-on-a-chip-how-mmwave-sensing-works",
+      "slug": "radar-on-a-chip-how-mmwave-sensing-works",
+      "excerpt": "The technology inside automotive radar, gesture sensors, and through-wall imaging systems.",
+      "author": "Sam Torres",
+      "category": "Sensors",
+      "published_at": "2026-01-31T11:13:48.581",
+      "read_time_minutes": 8
+    },
+    {
+      "title": "The 3nm Node Race: TSMC N3 vs Samsung SF3",
+      "url": "https://flybackelectronics.com/article/the-3nm-node-race-tsmc-n3-vs-samsung-sf3",
+      "slug": "the-3nm-node-race-tsmc-n3-vs-samsung-sf3",
+      "excerpt": "A technical comparison of leading-edge process technologies and what they mean for chip designers.",
+      "author": "Alex Chen",
+      "category": "Semiconductors",
+      "published_at": "2026-01-28T11:13:48.581",
+      "read_time_minutes": 11
+    },
+    {
+      "title": "MEMS Sensors: The Invisible Engine of Modern Electronics",
+      "url": "https://flybackelectronics.com/article/mems-sensors-the-invisible-engine-of-modern-electronics",
+      "slug": "mems-sensors-the-invisible-engine-of-modern-electronics",
+      "excerpt": "How micro-electromechanical systems found their way into every device you own.",
+      "author": "Maya Patel",
+      "category": "Sensors",
+      "published_at": "2026-01-25T11:13:48.581",
+      "read_time_minutes": 6
+    },
+    {
+      "title": "Power Management IC Design: The Unsung Hero",
+      "url": "https://flybackelectronics.com/article/power-management-ic-design-the-unsung-hero",
+      "slug": "power-management-ic-design-the-unsung-hero",
+      "excerpt": "PMICs regulate every voltage rail on every chip — and designing them is harder than it looks.",
+      "author": "Jordan Lee",
+      "category": "Power Electronics",
+      "published_at": "2026-01-22T11:13:48.581",
+      "read_time_minutes": 9
+    },
+    {
+      "title": "Chiplet Architecture: The End of Monolithic SoCs?",
+      "url": "https://flybackelectronics.com/article/chiplet-architecture-the-end-of-monolithic-socs",
+      "slug": "chiplet-architecture-the-end-of-monolithic-socs",
+      "excerpt": "How disaggregation, UCIe, and advanced packaging are reshaping semiconductor economics.",
+      "author": "Sam Torres",
+      "category": "AI Hardware",
+      "published_at": "2026-01-19T11:13:48.581",
+      "read_time_minutes": 10
+    },
+    {
+      "title": "Antenna Design for 5G mmWave Devices",
+      "url": "https://flybackelectronics.com/article/antenna-design-for-5g-mmwave-devices",
+      "slug": "antenna-design-for-5g-mmwave-devices",
+      "excerpt": "Phased arrays, beam steering, and the engineering challenges of 28 GHz in a smartphone.",
+      "author": "Alex Chen",
+      "category": "Communication",
+      "published_at": "2026-01-16T11:13:48.581",
+      "read_time_minutes": 11
+    },
+    {
+      "title": "The Open Hardware Movement: OSHWA and the Future of Design",
+      "url": "https://flybackelectronics.com/article/the-open-hardware-movement-oshwa-and-the-future-of-design",
+      "slug": "the-open-hardware-movement-oshwa-and-the-future-of-design",
+      "excerpt": "How open-source principles are disrupting proprietary hardware ecosystems.",
+      "author": "Maya Patel",
+      "category": "PCB Design",
+      "published_at": "2026-01-13T11:13:48.581",
+      "read_time_minutes": 7
+    },
+    {
+      "title": "Thermal Management in High-Power Electronics",
+      "url": "https://flybackelectronics.com/article/thermal-management-in-high-power-electronics",
+      "slug": "thermal-management-in-high-power-electronics",
+      "excerpt": "From heat pipes to vapour chambers — keeping chips cool as power densities climb.",
+      "author": "Jordan Lee",
+      "category": "Embedded Systems",
+      "published_at": "2026-01-10T11:13:48.581",
+      "read_time_minutes": 8
+    },
+    {
+      "title": "Embedded Linux vs RTOS: Choosing the Right Foundation",
+      "url": "https://flybackelectronics.com/article/embedded-linux-vs-rtos-choosing-the-right-foundation",
+      "slug": "embedded-linux-vs-rtos-choosing-the-right-foundation",
+      "excerpt": "A pragmatic decision framework for firmware engineers facing the OS choice.",
+      "author": "Sam Torres",
+      "category": "Embedded Systems",
+      "published_at": "2026-01-07T11:13:48.581",
+      "read_time_minutes": 8
+    }
+  ]
+}

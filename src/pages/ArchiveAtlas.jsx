@@ -2,11 +2,14 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import useArticles from '../hooks/useArticles'
-import usePageTitle from '../hooks/usePageTitle'
+import useSEO from '../hooks/useSEO'
 import { getArticleUrl } from '../constants/articles'
 
 const ArchiveAtlas = () => {
-    usePageTitle('Archive Atlas')
+    useSEO({
+        title: 'Archive Atlas',
+        description: 'Explore the complete chronological library of Flyback Electronics. Search and navigate through every deep dive, analysis, and news item we have ever published.'
+    })
     const { articles, isLoading } = useArticles()
     const [search, setSearch] = useState('')
 

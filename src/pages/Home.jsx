@@ -1,9 +1,11 @@
 import NodeCanvas from '../components/canvas/NodeCanvas'
-import usePageTitle from '../hooks/usePageTitle'
+import useSEO from '../hooks/useSEO'
 
 // Home Page — the spatial "atlas" layout
 const Home = () => {
-    usePageTitle(null) // shows just "Flyback Electronics"
+    useSEO({
+        description: 'In-depth electronics insights, deep dives, analysis and emerging trends in semiconductors, AI, and robotics.',
+    })
     return <NodeCanvas />
 }
 

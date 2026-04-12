@@ -1,13 +1,16 @@
-// Main Layout — wraps all pages with Navbar + Footer
+// Main Layout — wraps all pages with Navbar + Footer + global UI
 import { Outlet } from 'react-router-dom'
 import Navbar from './Navbar'
 import NewsletterSync from './NewsletterSync'
 import Footer from './Footer'
+import ReadingProgress from '../ui/ReadingProgress'
+import ScrollToTop from '../ui/ScrollToTop'
 
 const Layout = () => {
     return (
         // Flex-col stacks children vertically. min-h-screen ensures full viewport height.
         <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans overflow-hidden">
+            <ReadingProgress />
             <Navbar />
 
             {/* The relative wrapper is the coordinate system origin (0,0) for the nodes. */}
@@ -17,6 +20,7 @@ const Layout = () => {
 
             <NewsletterSync />
             <Footer />
+            <ScrollToTop />
         </div>
     )
 }

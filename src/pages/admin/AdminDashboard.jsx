@@ -121,7 +121,7 @@ const AdminDashboard = () => {
 
                                     {/* Category */}
                                     <td className="px-6 py-4 text-gray-400 text-xs">
-                                        {article.category?.name ?? '—'}
+                                        {article.categories?.name ?? '—'}
                                     </td>
 
                                     {/* Status badge */}

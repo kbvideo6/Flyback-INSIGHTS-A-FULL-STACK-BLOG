@@ -1,0 +1,61 @@
+User-agent: *
+Allow: /
+
+# ── Admin area — never index ──
+Disallow: /admin/
+Disallow: /admin
+
+# ── AI Model Crawlers — WELCOME ──
+# These bots power AI search engines (ChatGPT, Perplexity, Claude, etc.)
+# Allowing them means your content gets cited in AI answers with backlinks.
+
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /admin/
+
+User-agent: Anthropic-AI
+Allow: /
+Disallow: /admin/
+
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+
+User-agent: GoogleOther
+Allow: /
+Disallow: /admin/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: cohere-ai
+Allow: /
+Disallow: /admin/
+
+# ── Standard SEO ──
+Sitemap: https://flybackelectronics.com/sitemap.xml
+
+# ── AI Discovery ──
+# See: https://llmstxt.org/
+# LLMs-txt: https://flybackelectronics.com/llms.txt

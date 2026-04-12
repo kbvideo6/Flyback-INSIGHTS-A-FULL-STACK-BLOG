@@ -1,5 +1,5 @@
 // Privacy Policy Page
-import usePageTitle from '../hooks/usePageTitle'
+import useSEO from '../hooks/useSEO'
 
 const SECTIONS = [
     {
@@ -45,7 +45,11 @@ const SECTIONS = [
 ]
 
 const PrivacyPolicy = () => {
-    usePageTitle('Privacy Policy')
+    useSEO({
+        title: 'Privacy Policy',
+        description: 'How we collect, use, and protect your data at Flyback Electronics. Our commitment to privacy and data security.',
+        noindex: true
+    })
 
     return (
         <div className="w-full max-w-3xl mx-auto px-4 lg:px-8 py-16">

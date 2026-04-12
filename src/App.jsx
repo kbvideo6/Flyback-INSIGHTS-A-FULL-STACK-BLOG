@@ -12,6 +12,7 @@ import Contact from './pages/Contact'
 import Careers from './pages/Careers'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import ArchiveAtlas from './pages/ArchiveAtlas'
+import NotFound from './pages/NotFound'
 
 // ── Admin layout & pages ─────────────────────────────────────────────────
 import AdminLayout from './pages/admin/AdminLayout'
@@ -41,6 +42,8 @@ function App() {
             <Route path="careers" element={<Careers />} />
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="archive" element={<ArchiveAtlas />} />
+            {/* ── 404 fallback inside public layout ── */}
+            <Route path="*" element={<NotFound />} />
           </Route>
 
           {/* ── Admin: public login page ── */}

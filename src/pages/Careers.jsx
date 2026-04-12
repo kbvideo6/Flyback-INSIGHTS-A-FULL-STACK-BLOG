@@ -1,5 +1,4 @@
-// Careers Page
-import usePageTitle from '../hooks/usePageTitle'
+import useSEO from '../hooks/useSEO'
 
 const ROLES = [
     {
@@ -36,7 +35,10 @@ const VALUES = [
 ]
 
 const Careers = () => {
-    usePageTitle('Careers')
+    useSEO({
+        title: 'Careers',
+        description: 'Join the team building the future of tech journalism. Flyback Electronics is looking for technical writers, electronics engineers, and analysts.'
+    })
 
     return (
         <div className="w-full max-w-6xl mx-auto px-4 lg:px-8 py-16">

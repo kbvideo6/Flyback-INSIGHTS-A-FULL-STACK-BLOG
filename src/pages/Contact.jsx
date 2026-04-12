@@ -1,6 +1,5 @@
-// Contact Page
 import { useState } from 'react'
-import usePageTitle from '../hooks/usePageTitle'
+import useSEO from '../hooks/useSEO'
 
 const CHANNELS = [
     {
@@ -36,7 +35,10 @@ const CHANNELS = [
 ]
 
 const Contact = () => {
-    usePageTitle('Contact')
+    useSEO({
+        title: 'Contact',
+        description: "Get in touch with Flyback Electronics. Whether you have a story tip, a partnership proposal, or just a question about electronics, we're here to talk."
+    })
     const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
     const [sent, setSent] = useState(false)
 

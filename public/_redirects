@@ -1,0 +1,8 @@
+/* Netlify SPA routing — all routes fall back to index.html */
+/*  Place this file in: public/_redirects  */
+/*  Netlify reads it at build time.        */
+/* ────────────────────────────────────── */
+/* Block admin from search engines */
+/admin/*   /admin/login  302
+/* SPA fallback for all public routes */
+/*   /index.html   200

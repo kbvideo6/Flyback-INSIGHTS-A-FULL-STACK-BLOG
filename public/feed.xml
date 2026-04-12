@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Flyback Electronics</title>
+    <link>https://flybackelectronics.com</link>
+    <description>In-depth electronics insights, deep dives, analysis and emerging trends in semiconductors, AI, and robotics.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 12 Apr 2026 18:45:44 GMT</lastBuildDate>
+    <atom:link href="https://flybackelectronics.com/feed.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://flybackelectronics.com/favicon.webp</url>
+      <title>Flyback Electronics</title>
+      <link>https://flybackelectronics.com</link>
+    </image>
+    <item>
+      <title>AI Chip Market Growth: 2024–2028 Forecast</title>
+      <link>https://flybackelectronics.com/article/ai-chip-market-growth-20242028-forecast</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/ai-chip-market-growth-20242028-forecast</guid>
+      <description>Analyzing the $120B trajectory of AI accelerator silicon and who stands to dominate.</description>
+      <author>Alex Chen</author>
+      <category>AI Hardware</category>
+      <pubDate>Thu, 05 Mar 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>RISC-V vs ARM: The Battle for Edge Dominance</title>
+      <link>https://flybackelectronics.com/article/risc-v-vs-arm-the-battle-for-edge-dominance</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/risc-v-vs-arm-the-battle-for-edge-dominance</guid>
+      <description>How the open ISA is reshaping the microcontroller and embedded processor landscape.</description>
+      <author>Maya Patel</author>
+      <category>Edge Computing</category>
+      <pubDate>Mon, 02 Mar 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Semiconductor Supply Chain Risk Report 2025</title>
+      <link>https://flybackelectronics.com/article/semiconductor-supply-chain-risk-report-2025</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/semiconductor-supply-chain-risk-report-2025</guid>
+      <description>Mapping geopolitical dependencies and single-point failures in global chip manufacturing.</description>
+      <author>Jordan Lee</author>
+      <category>Semiconductors</category>
+      <pubDate>Fri, 27 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>The Silicon Brain: Neuromorphic Computing Explained</title>
+      <link>https://flybackelectronics.com/article/the-silicon-brain-neuromorphic-computing-explained</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/the-silicon-brain-neuromorphic-computing-explained</guid>
+      <description>From neuromorphic chips to photonic computing — the frontier beyond von Neumann architecture.</description>
+      <author>Sam Torres</author>
+      <category>Neuromorphic</category>
+      <pubDate>Tue, 24 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Graphene&apos;s Promise for Flexible Electronics</title>
+      <link>https://flybackelectronics.com/article/graphenes-promise-for-flexible-electronics</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/graphenes-promise-for-flexible-electronics</guid>
+      <description>Moving beyond the hype: manufacturing challenges and the reality of flexible screens.</description>
+      <author>Alex Chen</author>
+      <category>Materials</category>
+      <pubDate>Sat, 21 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Power Electronics Revolution: GaN and SiC Take Over</title>
+      <link>https://flybackelectronics.com/article/power-electronics-revolution-gan-and-sic-take-over</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/power-electronics-revolution-gan-and-sic-take-over</guid>
+      <description>Wide-bandgap semiconductors are displacing silicon in EV chargers, solar inverters, and data centres.</description>
+      <author>Maya Patel</author>
+      <category>Power Electronics</category>
+      <pubDate>Wed, 18 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>The HBM3 Memory Wars: Samsung vs SK Hynix vs Micron</title>
+      <link>https://flybackelectronics.com/article/the-hbm3-memory-wars-samsung-vs-sk-hynix-vs-micron</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/the-hbm3-memory-wars-samsung-vs-sk-hynix-vs-micron</guid>
+      <description>AI training clusters demand memory bandwidth that GDDR6 cannot provide. Enter High Bandwidth Memory.</description>
+      <author>Jordan Lee</author>
+      <category>AI Hardware</category>
+      <pubDate>Sun, 15 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Quantum Computing: Where Are We Actually?</title>
+      <link>https://flybackelectronics.com/article/quantum-computing-where-are-we-actually</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/quantum-computing-where-are-we-actually</guid>
+      <description>Cutting through the noise on qubit counts, error correction, and when quantum advantage will matter.</description>
+      <author>Sam Torres</author>
+      <category>Machine Learning</category>
+      <pubDate>Thu, 12 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>PCB Design in 2025: Signal Integrity at 100+ Gbps</title>
+      <link>https://flybackelectronics.com/article/pcb-design-in-2025-signal-integrity-at-100-gbps</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/pcb-design-in-2025-signal-integrity-at-100-gbps</guid>
+      <description>High-speed serial design challenges, material choices, and simulation-driven layout strategies.</description>
+      <author>Alex Chen</author>
+      <category>PCB Design</category>
+      <pubDate>Mon, 09 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Open-Source EDA Tools: The KiCad Revolution</title>
+      <link>https://flybackelectronics.com/article/open-source-eda-tools-the-kicad-revolution</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/open-source-eda-tools-the-kicad-revolution</guid>
+      <description>How free PCB design software went from hobbyist curiosity to professional-grade production tool.</description>
+      <author>Maya Patel</author>
+      <category>PCB Design</category>
+      <pubDate>Fri, 06 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>EV Battery Technology: Solid-State vs Lithium-Ion</title>
+      <link>https://flybackelectronics.com/article/ev-battery-technology-solid-state-vs-lithium-ion</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/ev-battery-technology-solid-state-vs-lithium-ion</guid>
+      <description>Timeline, energy density claims, and the manufacturing challenges of solid-state batteries.</description>
+      <author>Jordan Lee</author>
+      <category>Materials</category>
+      <pubDate>Tue, 03 Feb 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Radar on a Chip: How mmWave Sensing Works</title>
+      <link>https://flybackelectronics.com/article/radar-on-a-chip-how-mmwave-sensing-works</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/radar-on-a-chip-how-mmwave-sensing-works</guid>
+      <description>The technology inside automotive radar, gesture sensors, and through-wall imaging systems.</description>
+      <author>Sam Torres</author>
+      <category>Sensors</category>
+      <pubDate>Sat, 31 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>The 3nm Node Race: TSMC N3 vs Samsung SF3</title>
+      <link>https://flybackelectronics.com/article/the-3nm-node-race-tsmc-n3-vs-samsung-sf3</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/the-3nm-node-race-tsmc-n3-vs-samsung-sf3</guid>
+      <description>A technical comparison of leading-edge process technologies and what they mean for chip designers.</description>
+      <author>Alex Chen</author>
+      <category>Semiconductors</category>
+      <pubDate>Wed, 28 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>MEMS Sensors: The Invisible Engine of Modern Electronics</title>
+      <link>https://flybackelectronics.com/article/mems-sensors-the-invisible-engine-of-modern-electronics</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/mems-sensors-the-invisible-engine-of-modern-electronics</guid>
+      <description>How micro-electromechanical systems found their way into every device you own.</description>
+      <author>Maya Patel</author>
+      <category>Sensors</category>
+      <pubDate>Sun, 25 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Power Management IC Design: The Unsung Hero</title>
+      <link>https://flybackelectronics.com/article/power-management-ic-design-the-unsung-hero</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/power-management-ic-design-the-unsung-hero</guid>
+      <description>PMICs regulate every voltage rail on every chip — and designing them is harder than it looks.</description>
+      <author>Jordan Lee</author>
+      <category>Power Electronics</category>
+      <pubDate>Thu, 22 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Chiplet Architecture: The End of Monolithic SoCs?</title>
+      <link>https://flybackelectronics.com/article/chiplet-architecture-the-end-of-monolithic-socs</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/chiplet-architecture-the-end-of-monolithic-socs</guid>
+      <description>How disaggregation, UCIe, and advanced packaging are reshaping semiconductor economics.</description>
+      <author>Sam Torres</author>
+      <category>AI Hardware</category>
+      <pubDate>Mon, 19 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Antenna Design for 5G mmWave Devices</title>
+      <link>https://flybackelectronics.com/article/antenna-design-for-5g-mmwave-devices</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/antenna-design-for-5g-mmwave-devices</guid>
+      <description>Phased arrays, beam steering, and the engineering challenges of 28 GHz in a smartphone.</description>
+      <author>Alex Chen</author>
+      <category>Communication</category>
+      <pubDate>Fri, 16 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>The Open Hardware Movement: OSHWA and the Future of Design</title>
+      <link>https://flybackelectronics.com/article/the-open-hardware-movement-oshwa-and-the-future-of-design</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/the-open-hardware-movement-oshwa-and-the-future-of-design</guid>
+      <description>How open-source principles are disrupting proprietary hardware ecosystems.</description>
+      <author>Maya Patel</author>
+      <category>PCB Design</category>
+      <pubDate>Tue, 13 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Thermal Management in High-Power Electronics</title>
+      <link>https://flybackelectronics.com/article/thermal-management-in-high-power-electronics</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/thermal-management-in-high-power-electronics</guid>
+      <description>From heat pipes to vapour chambers — keeping chips cool as power densities climb.</description>
+      <author>Jordan Lee</author>
+      <category>Embedded Systems</category>
+      <pubDate>Sat, 10 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+    <item>
+      <title>Embedded Linux vs RTOS: Choosing the Right Foundation</title>
+      <link>https://flybackelectronics.com/article/embedded-linux-vs-rtos-choosing-the-right-foundation</link>
+      <guid isPermaLink="true">https://flybackelectronics.com/article/embedded-linux-vs-rtos-choosing-the-right-foundation</guid>
+      <description>A pragmatic decision framework for firmware engineers facing the OS choice.</description>
+      <author>Sam Torres</author>
+      <category>Embedded Systems</category>
+      <pubDate>Wed, 07 Jan 2026 05:43:48 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

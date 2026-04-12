@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-sitemap.js && node scripts/generate-ai-feed.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "generate:feeds": "node scripts/generate-ai-feed.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -17,6 +20,7 @@
     "@tiptap/extension-image": "^3.20.0",
     "@tiptap/react": "^3.20.0",
     "@tiptap/starter-kit": "^3.20.0",
+    "dompurify": "^3.3.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.1",

@@ -223,6 +223,8 @@ const NAV_LINKS = [
 const MobileMenu = ({ isOpen, onClose, onSubscribe }) => {
     const location = useLocation()
 
+    // Close menu whenever the route changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => { onClose() }, [location.pathname])
 
     return (

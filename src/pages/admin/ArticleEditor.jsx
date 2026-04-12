@@ -88,30 +88,32 @@ const ArticleEditor = () => {
         if (isNew) setSlug(slugify(value))
     }
 
-    // ── Cover image upload ────────────────────────────────────────────────
-    const uploadCoverImage = useCallback(async (file) => {
+    // ── Upload cover image to Supabase Storage ───────────────────────────
+    const [isUploading, setIsUploading] = useState(false)
+    const [uploadError, setUploadError] = useState(null)
+
+    const handleFileUpload = useCallback(async (file) => {
         if (!file || !file.type.startsWith('image/')) {
-            setUploadError('Please drop an image file.')
+            setUploadError('Please select an image file.')
             return
         }
         setIsUploading(true)
         setUploadError(null)
         try {
-            const url = await admin.uploadImage(file)
-            setCoverUrl(url)
+            const ext = file.name.split('.').pop()
+            const path = `covers/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+            const { error: uploadErr } = await supabase.storage
+                .from('article-images')
+                .upload(path, file, { contentType: file.type, upsert: false })
+            if (uploadErr) throw new Error(uploadErr.message)
+            const { data } = supabase.storage.from('article-images').getPublicUrl(path)
+            setCoverUrl(data.publicUrl)
         } catch (err) {
             setUploadError(err.message ?? 'Upload failed.')
         } finally {
             setIsUploading(false)
         }
     }, [])
-
-    const handleDrop = (e) => {
-        e.preventDefault()
-        setIsDragging(false)
-        const file = e.dataTransfer.files?.[0]
-        if (file) uploadCoverImage(file)
-    }
 
     // ── Save (draft or published) ─────────────────────────────────────────
     const handleSave = async (publish = false) => {
@@ -173,20 +175,41 @@ const ArticleEditor = () => {
             )}
 
             <div className="space-y-6">
-                {/* ── Cover image URL ── */}
+                {/* ── Cover image ── */}
                 <div>
-                    <label htmlFor="article-cover-url" className="block text-xs font-medium text-gray-400 mb-1">Cover Image URL</label>
-                    <input
-                        id="article-cover-url"
-                        type="url"
-                        value={coverUrl}
-                        onChange={(e) => setCoverUrl(e.target.value)}
-                        placeholder="https://…"
-                        className={fieldCls}
-                    />
-                    {coverUrl && (
-                        <img src={coverUrl} alt="Cover preview" className="mt-2 rounded-lg max-h-40 object-cover" />
-                    )}
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Cover Image</label>
+                    <div className="flex flex-col gap-2">
+                        <input
+                            id="article-cover-url"
+                            type="url"
+                            value={coverUrl}
+                            onChange={(e) => { setCoverUrl(e.target.value); setUploadError(null) }}
+                            placeholder="Paste image URL, or upload below…"
+                            className={fieldCls}
+                        />
+                        <div className="flex items-center gap-3">
+                            <label
+                                htmlFor="article-cover-file"
+                                className={`cursor-pointer px-4 py-2 rounded-lg text-xs font-medium border border-white/10 transition-colors ${
+                                    isUploading ? 'opacity-50 pointer-events-none bg-white/5 text-gray-500' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'
+                                }`}
+                            >
+                                {isUploading ? 'Uploading…' : '⬆ Upload from file'}
+                            </label>
+                            <input
+                                id="article-cover-file"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f) }}
+                                disabled={isUploading}
+                            />
+                            {uploadError && <p className="text-red-400 text-xs">{uploadError}</p>}
+                        </div>
+                        {coverUrl && (
+                            <img src={coverUrl} alt="Cover preview" className="mt-1 rounded-lg max-h-40 object-cover border border-white/10" />
+                        )}
+                    </div>
                 </div>
 
                 {/* ── Metadata ── */}
