@@ -5,12 +5,15 @@ import { useParams, Link } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 import useArticle from '../hooks/useArticle'
 import useArticles from '../hooks/useArticles'
+import useSocial from '../hooks/useSocial'
 import { getArticleUrl } from '../constants/articles'
 import ArticleBody from '../components/layout/ArticleBody'
 import useSEO from '../hooks/useSEO'
 import TableOfContents from '../components/ui/TableOfContents'
 import HighlightShare from '../components/ui/HighlightShare'
 import Breadcrumbs from '../components/ui/Breadcrumbs'
+import ReactionBar from '../components/social/ReactionBar'
+import CommentSection from '../components/social/CommentSection'
 
 const BASE_URL = 'https://flybackelectronics.com'
 
@@ -18,6 +21,13 @@ const ArticlePage = () => {
     const { slug } = useParams()
     const { article, isLoading } = useArticle(slug)
     const { articles } = useArticles()
+    const { 
+        comments, 
+        reactions, 
+        addComment, 
+        addReaction, 
+        isLoading: socialLoading 
+    } = useSocial(article?.id)
     const articleBodyRef = useRef(null)
 
     // ── Per-article SEO ──
@@ -149,7 +159,7 @@ const ArticlePage = () => {
             </h1>
 
             {/* ── Meta info ── */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-10 pb-8 border-b border-glass-border">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-6 pb-6 border-b border-glass-border">
                 {article.author && (
                     <span className="flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <span className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white text-xs font-bold">
@@ -173,6 +183,14 @@ const ArticlePage = () => {
                 )}
             </div>
 
+            {/* ── Sentiment Pulse (Reactions) ── */}
+            <div className="mb-10">
+                <ReactionBar 
+                    counts={reactions} 
+                    onReact={addReaction} 
+                />
+            </div>
+
             {/* ── Table of Contents ── */}
             <TableOfContents content={article.content ?? article.body ?? null} />
 
@@ -190,12 +208,12 @@ const ArticlePage = () => {
             {/* ── Share bar ── */}
             <div className="mt-12 pt-8 border-t border-glass-border">
                 <div className="flex items-center gap-4 mb-10">
-                    <span className="text-xs text-gray-500 font-semibold tracking-widest uppercase">Share</span>
+                    <span className="text-xs text-secondary font-black tracking-widest uppercase opacity-40">Share Transmission</span>
                     <a
                         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(`${BASE_URL}/article/${article.slug}`)}&via=flybackelec`}
                         target="_blank"
                         rel="noreferrer"
-                        className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 transition-all duration-200"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/5 text-gray-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-300"
                         aria-label="Share on X"
                     >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
@@ -204,14 +222,14 @@ const ArticlePage = () => {
                         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${BASE_URL}/article/${article.slug}`)}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30 transition-all duration-200"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/5 text-gray-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-300"
                         aria-label="Share on LinkedIn"
                     >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0H5a5 5 0 00-5 5v14a5 5 0 005 5h14a5 5 0 005-5V5a5 5 0 00-5-5zM8 19H5V8h3v11zM6.5 6.732c-.966 0-1.75-.79-1.75-1.764S5.534 3.204 6.5 3.204s1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765c1.396-2.586 7-2.777 7 2.476V19z" /></svg>
                     </a>
                     <a
                         href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(`${article.excerpt}\n\nRead more: ${BASE_URL}/article/${article.slug}`)}`}
-                        className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 transition-all duration-200"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/5 text-gray-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-300"
                         aria-label="Share via email"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
@@ -237,21 +255,21 @@ const ArticlePage = () => {
                                     {related.title}
                                 </h4>
                                 {related.excerpt && (
-                                    <p className="text-gray-500 text-xs mt-2 line-clamp-2">{related.excerpt}</p>
+                                    <p className="text-secondary text-xs mt-2 line-clamp-2 opacity-60">{related.excerpt}</p>
                                 )}
                             </Link>
                         ))}
                     </div>
 
-                    {/* ── More from this category — internal linking for SEO ── */}
+                    {/* ── More from this category ── */}
                     {relatedArticles.length > 2 && (
-                        <div className="mt-6">
-                            <h4 className="text-xs font-bold tracking-widest text-gray-500 uppercase mb-3">More in {article.categories?.name}</h4>
-                            <ul className="space-y-2">
+                        <div className="mt-8">
+                            <h4 className="text-[10px] font-black tracking-widest text-secondary uppercase mb-4 opacity-40">More in {article.categories?.name}</h4>
+                            <ul className="space-y-3">
                                 {relatedArticles.slice(2, 4).map((r) => (
                                     <li key={r.id}>
-                                        <Link to={getArticleUrl(r)} className="text-sm text-gray-400 hover:text-primary transition-colors flex items-center gap-2">
-                                            <svg className="w-3 h-3 text-gray-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <Link to={getArticleUrl(r)} className="text-sm text-secondary hover:text-primary transition-all flex items-center gap-3 group opacity-80 hover:opacity-100">
+                                            <svg className="w-3.5 h-3.5 text-primary opacity-30 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                             </svg>
                                             {r.title}
@@ -263,36 +281,44 @@ const ArticlePage = () => {
                     )}
                 </section>
             )}
+
             {/* ── Footer / Authority Section ── */}
-            <div className="mt-16 pt-12 border-t border-white/10">
-                <div className="glass-panel p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+            <div className="mt-16 pt-12 border-t border-glass-border">
+                <div className="glass-panel p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-primary opacity-40 group-hover:opacity-100 transition-opacity" />
                     
-                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-xl shrink-0">
+                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-xl shrink-0 group-hover:scale-105 transition-transform">
                         FE
                     </div>
                     
                     <div className="flex-1 text-center md:text-left">
                         <h4 className="text-xl font-display font-bold text-white mb-2">About the Author</h4>
-                        <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                        <p className="text-secondary text-sm leading-relaxed mb-4 opacity-80">
                             <strong>Flyback Engineer</strong> is an Electronic and Embedded System Design Engineer with 50+ successful PCB designs shipped globally. Specializing in high-speed digital layout, firmware development, and MERN stack IoT integration.
                         </p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-4">
                             <a 
                                 href="https://www.fiverr.com/s/your-profile-link" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-xs bg-primary hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg transition-colors shadow-lg shadow-blue-600/20"
+                                className="btn-primary"
                             >
                                 Hire for Design
                             </a>
-                            <Link to="/about" className="text-xs bg-white/5 hover:bg-white/10 text-gray-300 px-4 py-2 rounded-lg border border-white/10 transition-colors">
+                            <Link to="/about" className="text-[10px] font-black uppercase tracking-widest text-secondary hover:text-primary px-4 py-2 border border-glass-border rounded-xl transition-all">
                                 View Credentials
                             </Link>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* ── Technical Logs / Discussion ── */}
+            <CommentSection 
+                comments={comments} 
+                onAddComment={addComment} 
+                isLoading={socialLoading} 
+            />
         </article>
     )
 }

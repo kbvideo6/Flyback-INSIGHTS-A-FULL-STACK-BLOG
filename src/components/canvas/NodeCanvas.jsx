@@ -50,21 +50,21 @@ const NodeCanvas = () => {
             <div className="hidden lg:block absolute inset-0">
 
                 {/* ── Background ambient glow ── */}
-                <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[150px] pointer-events-none" />
-                <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[130px] pointer-events-none" />
+                <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[160px] pointer-events-none" />
+                <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-blue-500/3 rounded-full blur-[140px] pointer-events-none" />
 
-                {/* ── Subtle dot grid overlay ── */}
+                {/* ── Subtle technical grid overlay ── */}
                 <div
-                    className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                    className="absolute inset-0 opacity-[0.2] pointer-events-none"
                     style={{
-                        backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
-                        backgroundSize: '60px 60px',
+                        backgroundImage: 'radial-gradient(circle, var(--text-primary) 0.5px, transparent 0.5px)',
+                        backgroundSize: '48px 48px',
                     }}
                 />
 
                 {/* ── SVG connection lines ── */}
                 {edges?.length > 0 && (
-                    <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+                    <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-50">
                         {edges.map((edge, i) => (
                             <line
                                 key={i}
@@ -77,7 +77,7 @@ const NodeCanvas = () => {
                         <defs>
                             <linearGradient id="line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stopColor="transparent" />
-                                <stop offset="50%" stopColor="rgba(59,130,246,0.2)" />
+                                <stop offset="50%" stopColor="var(--accent-blue)" />
                                 <stop offset="100%" stopColor="transparent" />
                             </linearGradient>
                         </defs>
@@ -87,7 +87,7 @@ const NodeCanvas = () => {
                 {/* ── Loading skeleton ── */}
                 {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-gray-600 text-sm animate-pulse">Loading canvas…</span>
+                        <span className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse">Initializing Neural Map…</span>
                     </div>
                 )}
 

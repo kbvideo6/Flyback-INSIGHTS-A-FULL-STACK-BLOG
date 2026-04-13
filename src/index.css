@@ -1,42 +1,47 @@
 @import "tailwindcss";
 
-/* ── Design Tokens (CSS Variables for Theme Switching) ── */
+/* ── Design Tokens (Engineering-Grade Theme System) ── */
 :root {
-    /* Soft Light Theme (Default) */
-    --bg-main: #F8FAFC;
-    --bg-card: #FFFFFF;
-    --text-primary: #0F172A;
-    --text-secondary: #475569;
-    --accent-blue: #2563EB;
-    --glass-border: rgba(0, 0, 0, 0.05);
-    --glass-surface: rgba(255, 255, 255, 0.8);
-    --card-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-    --image-filter: brightness(0.96);
-    --logo-color: #0F172A;
+    /* Satin Slate Light Theme (Less Bright / Maximum Clarity) */
+    --bg-main: #EDF2F7;           /* Cool gray-blue background */
+    --bg-card: rgba(255, 255, 255, 0.6);
+    --text-primary: #1A202C;      /* Deep obsidian slate */
+    --text-secondary: #4A5568;    /* Medium slate gray */
+    --accent-blue: #3182CE;
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --glass-surface: rgba(255, 255, 255, 0.55);
+    --glass-tint: rgba(49, 130, 206, 0.05);
+    --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.02), 0 4px 10px rgba(0, 0, 0, 0.01);
+    --image-filter: brightness(0.97) contrast(1.01) saturate(1.05);
+    --logo-color: #1A202C;
+    --ring-opacity: 0.1;
 }
 
 [data-theme='dark'] {
-    /* Premium Dark Theme */
+    /* Deep Intelligence Dark Theme */
     --bg-main: #0B0F19;
     --bg-card: #111827;
     --text-primary: #F8FAFC;
     --text-secondary: #94A3B8;
     --accent-blue: #3B82F6;
     --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-surface: rgba(255, 255, 255, 0.04);
+    --glass-surface: rgba(255, 255, 255, 0.03);
+    --glass-tint: rgba(59, 130, 246, 0.05);
     --card-shadow: none;
     --image-filter: none;
     --logo-color: #FFFFFF;
+    --ring-opacity: 0.2;
 }
 
 @theme {
-    /* ── Mapping Tailwind to Variables ── */
+    /* ── Tailwind Variable Mapping ── */
     --color-primary: var(--accent-blue);
     --color-background-dark: var(--bg-main);
     --color-glass-border: var(--glass-border);
     --color-glass-surface: var(--glass-surface);
+    --color-glass-tint: var(--glass-tint);
     
-    /* Dynamic Text Colors */
+    /* Dynamic Theme-Aware Grays */
     --color-gray-100: var(--text-primary);
     --color-gray-200: var(--text-primary);
     --color-gray-300: var(--text-secondary);
@@ -47,31 +52,18 @@
     /* ── Typography ── */
     --font-display: "Space Grotesk", sans-serif;
     --font-sans: "Inter", sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", monospace;
-
-    /* ── Border Radius ── */
-    --radius-DEFAULT: 0.5rem;
-    --radius-xl: 1rem;
-    --radius-2xl: 1.5rem;
+    --font-mono: "JetBrains Mono", monospace;
 }
 
-/* ── Base / Reset layer ──────────────────────────────────────────── */
+/* ── Base Layer ──────────────────────────────────────────────────── */
 @layer base {
-
-    /* Custom scrollbar (Chromium / WebKit) */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: var(--bg-main);
-    }
-
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
     ::-webkit-scrollbar-thumb {
         background: var(--text-secondary);
-        opacity: 0.3;
-        border-radius: 4px;
-        border: 2px solid var(--bg-main);
+        opacity: 0.2;
+        border-radius: 10px;
+        border: 3px solid var(--bg-main);
     }
 
     body {
@@ -80,49 +72,60 @@
         font-family: var(--font-sans);
         min-height: 100vh;
         overflow-x: hidden;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s ease;
     }
 
-    /* Text selection accent */
+    /* Selection Logic */
     ::selection {
         background: var(--accent-blue);
-        color: #fff;
+        color: #FFFFFF;
     }
 
-    /* Image handling */
+    /* Image Post-Processing */
     img {
         filter: var(--image-filter);
-        transition: filter 0.3s ease;
-    }
-
-    code,
-    pre,
-    kbd,
-    samp {
-        font-family: var(--font-mono);
-        font-size: 0.875em;
+        transition: filter 0.6s ease;
     }
 }
 
-/* ── Reusable component utilities ────────────────────────────────── */
+/* ── Component Layer ─────────────────────────────────────────────── */
 @layer components {
 
-    /* Glass‑morphism panel (Responsive to Theme) */
+    /* Ultra-High-Fidelity Glass Morphism */
     .glass-panel {
         background: var(--glass-surface);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(24px) saturate(200%);
+        -webkit-backdrop-filter: blur(24px) saturate(200%);
         border: 1px solid var(--glass-border);
-        border-radius: var(--radius-2xl);
+        border-radius: 1.75rem;
         box-shadow: var(--card-shadow);
-        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        transition: 
+            background-color 0.5s ease, 
+            border-color 0.5s ease, 
+            box-shadow 0.5s ease,
+            transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Decorative connection lines between nodes */
+    .glass-panel:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        background: var(--bg-card);
+    }
+
+    /* Modern Badge Tint */
+    .glass-badge {
+        background: var(--glass-tint);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        transition: all 0.3s ease;
+    }
+
+    /* Spatial Atlas Connections */
     .node-connection {
         position: absolute;
         background: linear-gradient(to right, transparent, var(--accent-blue), transparent);
-        opacity: 0.2;
+        opacity: var(--ring-opacity);
         height: 1px;
         z-index: 0;
         pointer-events: none;
@@ -131,23 +134,56 @@
     .vertical-connection {
         position: absolute;
         background: linear-gradient(to bottom, transparent, var(--accent-blue), transparent);
-        opacity: 0.2;
+        opacity: var(--ring-opacity);
         width: 1px;
         z-index: 0;
         pointer-events: none;
     }
 }
 
-/* ── TipTap Editor Theme Overrides ── */
+/* ── TipTap Authority Layer ──────────────────────────────────────── */
 .ProseMirror {
     color: var(--text-primary) !important;
-    min-height: 26rem;
-    padding: 1.5rem;
+    min-height: 30rem;
+    padding: 2.5rem;
     outline: none;
 }
-.ProseMirror h1, .ProseMirror h2, .ProseMirror h3 { color: var(--text-primary) !important; font-weight: bold; margin-top: 1.5rem; margin-bottom: 1rem; }
-.ProseMirror p { color: var(--text-secondary) !important; margin-bottom: 1rem; line-height: 1.6; }
-.ProseMirror blockquote { border-left: 4px solid var(--accent-blue); padding-left: 1rem; font-style: italic; color: var(--text-secondary); }
-.ProseMirror pre { background: #000; color: #4ade80; padding: 1.25rem; border-radius: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1.5rem; }
-.ProseMirror ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
-.ProseMirror ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+.ProseMirror h2, .ProseMirror h3 { 
+    color: var(--text-primary) !important; 
+    font-family: var(--font-display);
+    font-weight: 800; 
+    margin-top: 3rem; 
+    margin-bottom: 1.5rem; 
+    letter-spacing: -0.03em;
+}
+.ProseMirror p { 
+    color: var(--text-secondary) !important; 
+    margin-bottom: 1.75rem; 
+    line-height: 1.9; 
+    font-size: 1.1rem;
+}
+.ProseMirror blockquote { 
+    border-left: 5px solid var(--accent-blue); 
+    padding: 1.75rem;
+    background: var(--glass-tint);
+    font-style: italic; 
+    color: var(--text-primary);
+    border-radius: 0.5rem 1.5rem 1.5rem 0.5rem;
+    margin-bottom: 2.5rem;
+}
+.ProseMirror pre { 
+    background: #0D1117; 
+    color: #E6EDF3; 
+    padding: 1.75rem; 
+    border-radius: 1.25rem; 
+    font-family: var(--font-mono); 
+    font-size: 0.95rem; 
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.ProseMirror ul, .ProseMirror ol { 
+    padding-left: 2.5rem; 
+    margin-bottom: 1.75rem; 
+    color: var(--text-secondary);
+}
