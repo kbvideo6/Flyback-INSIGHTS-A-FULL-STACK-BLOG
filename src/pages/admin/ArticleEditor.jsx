@@ -23,6 +23,21 @@ const Btn = ({ onClick, active, title, children }) => (
 
 const DIVIDER = <span className="w-px h-5 bg-white/10 mx-1 self-center" />
 
+// ── Custom Image Extension with Resizing ──────────────────────────────────
+const ResizableImage = Image.extend({
+    addAttributes() {
+        return {
+            ...this.parent?.(),
+            width: {
+                default: '100%',
+                renderHTML: (attributes) => ({
+                    style: `width: ${attributes.width}; height: auto; max-width: 100%; display: block; margin: 0 auto;`,
+                }),
+            },
+        }
+    },
+})
+
 // ── Main component ────────────────────────────────────────────────────────
 const ArticleEditor = () => {
     const { id } = useParams()         // undefined → new article
@@ -42,7 +57,10 @@ const ArticleEditor = () => {
 
     // ── Tiptap editor ────────────────────────────────────────────────────
     const editor = useEditor({
-        extensions: [StarterKit, Image.configure({ inline: false, allowBase64: false })],
+        extensions: [
+            StarterKit,
+            ResizableImage.configure({ inline: false, allowBase64: false }),
+        ],
         content: '<p>Start writing your article here…</p>',
         editorProps: {
             attributes: {
@@ -51,35 +69,66 @@ const ArticleEditor = () => {
         },
     })
 
-    // ── Load categories for the dropdown ───────────────────────────
-    useEffect(() => {
-        supabase
+    // ── Load categories for selection ──────────────────────────────
+    const [topicTree, setTopicTree] = useState([])
+    const [selectedParentId, setSelectedParentId] = useState('')
+    const [selectedSubId, setSelectedSubId] = useState('')
+
+    const [isCreatingCat, setIsCreatingCat] = useState(false)
+    const [isCreatingSub, setIsCreatingSub] = useState(false)
+
+    const fetchCategories = useCallback(async () => {
+        const { data, error } = await supabase
             .from('categories')
-            .select('id, name')
+            .select('*')
             .order('name')
-            .then(({ data }) => { if (data?.length) setDbCategories(data) })
+        if (!error && data) {
+            const parents = data.filter(c => !c.parent_id)
+            const children = data.filter(c => c.parent_id)
+            const tree = parents.map(p => ({
+                ...p,
+                subtopics: children.filter(c => c.parent_id === p.id)
+            }))
+            setTopicTree(tree)
+            return { tree, all: data }
+        }
+        return { tree: [], all: [] }
     }, [])
+
+    useEffect(() => {
+        fetchCategories()
+    }, [fetchCategories])
 
     // ── Load existing article when editing ───────────────────────────────
     useEffect(() => {
         if (!isNew && editor) {
-            supabase
-                .from('articles')
-                .select('*')
-                .eq('id', id)
-                .single()
-                .then(({ data, error: err }) => {
-                    if (err) { setSaveError(`Could not load article: ${err.message}`); return }
-                    setTitle(data.title ?? '')
-                    setSlug(data.slug ?? '')
-                    setExcerpt(data.excerpt ?? '')
-                    setCategoryId(String(data.category_id ?? ''))
-                    setReadTime(String(data.read_time ?? ''))
-                    setCoverUrl(data.cover_image_url ?? '')
-                    if (data.content) editor.commands.setContent(data.content)
-                })
+            Promise.all([
+                supabase.from('articles').select('*, categories(*)').eq('id', id).single(),
+                fetchCategories()
+            ]).then(([{ data: article, error: err }, { all: allCats }]) => {
+                if (err) { setSaveError(`Could not load article: ${err.message}`); return }
+                setTitle(article.title ?? '')
+                setSlug(article.slug ?? '')
+                setExcerpt(article.excerpt ?? '')
+                setReadTime(String(article.read_time ?? ''))
+                setCoverUrl(article.cover_image_url ?? '')
+                if (article.content) editor.commands.setContent(article.content)
+
+                // Resolve category hierarchy
+                const catId = article.category_id
+                const currentCat = allCats.find(c => c.id === catId)
+                if (currentCat) {
+                    if (currentCat.parent_id) {
+                        setSelectedParentId(String(currentCat.parent_id))
+                        setSelectedSubId(String(currentCat.id))
+                    } else {
+                        setSelectedParentId(String(currentCat.id))
+                        setSelectedSubId('')
+                    }
+                }
+            })
         }
-    }, [id, isNew, editor])
+    }, [id, isNew, editor, fetchCategories])
 
     // ── Auto-generate slug from title (new articles only) ────────────────
     const handleTitleChange = (e) => {
@@ -115,24 +164,75 @@ const ArticleEditor = () => {
         }
     }, [])
 
+    // ── Create New Category/Subcategory ────────────────────────────
+    const handleCreateCategory = async () => {
+        const name = window.prompt('Enter new category name:')
+        if (!name) return
+        setIsCreatingCat(true)
+        try {
+            const { data, error } = await supabase
+                .from('categories')
+                .insert([{ name, slug: slugify(name) }])
+                .select()
+                .single()
+            if (error) throw error
+            await fetchCategories()
+            setSelectedParentId(String(data.id))
+            setSelectedSubId('')
+        } catch (err) {
+            alert(`Failed to create category: ${err.message}`)
+        } finally {
+            setIsCreatingCat(false)
+        }
+    }
+
+    const handleCreateSubcategory = async () => {
+        if (!selectedParentId) { alert('Select a main category first.'); return }
+        const name = window.prompt('Enter new subcategory name:')
+        if (!name) return
+        setIsCreatingSub(true)
+        try {
+            const { data, error } = await supabase
+                .from('categories')
+                .insert([{ name, slug: slugify(name), parent_id: parseInt(selectedParentId, 10) }])
+                .select()
+                .single()
+            if (error) throw error
+            await fetchCategories()
+            setSelectedSubId(String(data.id))
+        } catch (err) {
+            alert(`Failed to create subcategory: ${err.message}`)
+        } finally {
+            setIsCreatingSub(false)
+        }
+    }
+
     // ── Save (draft or published) ─────────────────────────────────────────
     const handleSave = async (publish = false) => {
         if (!title.trim()) { setSaveError('Title is required.'); return }
         if (!slug.trim()) { setSaveError('Slug is required.'); return }
-        if (!categoryId) { setSaveError('Category is required.'); return }
+
+        // Use subtopic if selected, otherwise main topic
+        const finalCatId = selectedSubId || selectedParentId
+        if (!finalCatId) { setSaveError('Category is required.'); return }
 
         setSaving(true)
         setSaveError(null)
 
+        const now = new Date().toISOString()
         const payload = {
             title,
             slug,
             excerpt,
             content: editor?.getHTML() ?? '',
-            category_id: parseInt(categoryId, 10),
+            category_id: parseInt(finalCatId, 10),
             read_time: readTime ? parseInt(readTime, 10) : null,
             cover_image_url: coverUrl || null,
             is_published: publish,
+            updated_at: now,
+            ...(isNew ? { created_at: now, published_at: publish ? now : null } : {
+                ...(publish && !article?.published_at ? { published_at: now } : {})
+            })
         }
 
         try {
@@ -152,18 +252,18 @@ const ArticleEditor = () => {
     const fieldCls = 'w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors'
 
     return (
-        <div className="max-w-4xl mx-auto pb-16">
+        <div className="max-w-4xl mx-auto px-4 pb-16">
             {/* Page heading */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <h1 className="text-2xl font-bold text-white">
                     {isNew ? 'New Article' : 'Edit Article'}
                 </h1>
                 <button
                     type="button"
                     onClick={() => navigate('/admin/articles')}
-                    className="text-gray-500 hover:text-white text-sm transition-colors"
+                    className="text-gray-500 hover:text-white text-sm transition-colors text-left"
                 >
-                    ← Back
+                    ← Back to Dashboard
                 </button>
             </div>
 
@@ -221,17 +321,61 @@ const ArticleEditor = () => {
                     </div>
 
                     {/* Slug + Category */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label htmlFor="article-slug" className="block text-xs font-medium text-gray-400 mb-1">Slug <span className="text-red-400">*</span></label>
                             <input id="article-slug" type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="auto-generated" className={`${fieldCls} font-mono`} />
                         </div>
                         <div>
-                            <label htmlFor="article-category" className="block text-xs font-medium text-gray-400 mb-1">Category <span className="text-red-400">*</span></label>
-                            <select id="article-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={fieldCls}>
-                                <option value="">Select category…</option>
-                                {dbCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                            </select>
+                            <label className="block text-xs font-medium text-gray-400 mb-1">
+                                Main Topic <span className="text-red-400">*</span>
+                            </label>
+                            <div className="flex gap-2">
+                                <select
+                                    id="article-parent-category"
+                                    value={selectedParentId}
+                                    onChange={(e) => { setSelectedParentId(e.target.value); setSelectedSubId('') }}
+                                    className={fieldCls}
+                                >
+                                    <option value="">Select Topic…</option>
+                                    {topicTree.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={handleCreateCategory}
+                                    disabled={isCreatingCat}
+                                    className="px-3 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                                    title="Add New Topic"
+                                >
+                                    {isCreatingCat ? '...' : '+'}
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-400 mb-1">Subtopic</label>
+                            <div className="flex gap-2">
+                                <select
+                                    id="article-sub-category"
+                                    value={selectedSubId}
+                                    onChange={(e) => setSelectedSubId(e.target.value)}
+                                    disabled={!selectedParentId}
+                                    className={`${fieldCls} disabled:opacity-40`}
+                                >
+                                    <option value="">No subtopic</option>
+                                    {topicTree.find(t => String(t.id) === selectedParentId)?.subtopics?.map((s) => (
+                                        <option key={s.id} value={s.id}>{s.name}</option>
+                                    ))}
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={handleCreateSubcategory}
+                                    disabled={!selectedParentId || isCreatingSub}
+                                    className="px-3 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-40"
+                                    title="Add New Subtopic"
+                                >
+                                    {isCreatingSub ? '...' : '+'}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -252,19 +396,19 @@ const ArticleEditor = () => {
                 <div className="bg-gray-900 border border-white/10 rounded-xl overflow-hidden">
                     {/* Toolbar */}
                     {editor && (
-                        <div className="flex flex-wrap items-center gap-0.5 px-3 py-2.5 border-b border-white/10 bg-gray-800/60">
-                            <Btn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold"><strong>B</strong></Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Italic"><em>I</em></Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Strikethrough"><s>S</s></Btn>
+                        <div className="flex flex-wrap items-center gap-1.5 px-4 py-3 border-b border-white/10 bg-gray-800/60">
+                            <Btn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold"><span className="w-5 h-5 flex items-center justify-center font-bold">B</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Italic"><span className="w-5 h-5 flex items-center justify-center italic font-serif">I</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Strikethrough"><span className="w-5 h-5 flex items-center justify-center line-through">S</span></Btn>
                             {DIVIDER}
-                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2">H2</Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Heading 3">H3</Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2"><span className="px-1">H2</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Heading 3"><span className="px-1">H3</span></Btn>
                             {DIVIDER}
-                            <Btn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Bullet list">• List</Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Ordered list">1. List</Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Bullet list"><span className="px-1 text-lg">•</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Ordered list"><span className="px-1">1.</span></Btn>
                             {DIVIDER}
-                            <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Blockquote">" "</Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} title="Code block">{`</>`}</Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Blockquote"><span className="text-lg">“</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} title="Code block"><span className="text-xs">{`</>`}</span></Btn>
                             <Btn onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule">—</Btn>
                             {DIVIDER}
                             {/* Insert image from URL */}
@@ -277,22 +421,62 @@ const ArticleEditor = () => {
                             >
                                 🖼
                             </Btn>
+
+                            {/* Image Resize Controls (only show when image is selected) */}
+                            {editor.isActive('image') && (
+                                <>
+                                    {DIVIDER}
+                                    <Btn
+                                        title="Small (25%)"
+                                        onClick={() => editor.chain().focus().updateAttributes('image', { width: '25%' }).run()}
+                                    >
+                                        ¼
+                                    </Btn>
+                                    <Btn
+                                        title="Medium (50%)"
+                                        onClick={() => editor.chain().focus().updateAttributes('image', { width: '50%' }).run()}
+                                    >
+                                        ½
+                                    </Btn>
+                                    <Btn
+                                        title="Large (75%)"
+                                        onClick={() => editor.chain().focus().updateAttributes('image', { width: '75%' }).run()}
+                                    >
+                                        ¾
+                                    </Btn>
+                                    <Btn
+                                        title="Full (100%)"
+                                        onClick={() => editor.chain().focus().updateAttributes('image', { width: '100%' }).run()}
+                                    >
+                                        Full
+                                    </Btn>
+                                    <Btn
+                                        title="Custom Width"
+                                        onClick={() => {
+                                            const w = window.prompt('Enter width (e.g. 400px or 60%):', '400px')
+                                            if (w) editor.chain().focus().updateAttributes('image', { width: w }).run()
+                                        }}
+                                    >
+                                        ↔
+                                    </Btn>
+                                </>
+                            )}
                         </div>
                     )}
                     <EditorContent editor={editor} />
                 </div>
 
                 {/* ── Action bar ── */}
-                <div className="flex items-center justify-between pt-2">
-                    <div className="text-xs text-gray-600">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+                    <div className="text-xs text-gray-600 order-2 sm:order-1">
                         {editor ? `${editor.storage.characterCount?.characters?.() ?? '—'} characters` : ''}
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap justify-center gap-3 order-1 sm:order-2 w-full sm:w-auto">
                         <button
                             type="button"
                             onClick={() => navigate('/admin/articles')}
                             disabled={saving}
-                            className="px-5 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-40"
+                            className="flex-1 sm:flex-none px-5 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-40 border border-transparent"
                         >
                             Cancel
                         </button>
@@ -300,7 +484,7 @@ const ArticleEditor = () => {
                             type="button"
                             onClick={() => handleSave(false)}
                             disabled={saving}
-                            className="px-5 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:bg-white/5 transition-colors disabled:opacity-40"
+                            className="flex-1 sm:flex-none px-5 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:bg-white/5 transition-colors disabled:opacity-40"
                         >
                             {saving ? 'Saving…' : 'Save Draft'}
                         </button>
@@ -308,9 +492,9 @@ const ArticleEditor = () => {
                             type="button"
                             onClick={() => handleSave(true)}
                             disabled={saving}
-                            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium px-6 py-2 rounded-lg text-sm transition-colors"
+                            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium px-8 py-2.5 rounded-lg text-sm transition-colors shadow-lg shadow-blue-900/20"
                         >
-                            {saving ? 'Publishing…' : 'Publish'}
+                            {saving ? 'Publishing…' : 'Publish Article'}
                         </button>
                     </div>
                 </div>
