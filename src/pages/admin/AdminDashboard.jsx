@@ -85,26 +85,26 @@ const AdminDashboard = () => {
             )}
 
             {/* ── Table ── */}
-            <div className="bg-gray-900 border border-white/10 rounded-xl overflow-hidden">
+            <div className="glass-panel overflow-hidden border-glass-border">
                 <table className="w-full text-sm">
                     <thead>
-                        <tr className="border-b border-white/10 text-gray-500 text-xs uppercase tracking-wider">
-                            <th className="text-left px-6 py-3 font-medium">Title</th>
-                            <th className="text-left px-6 py-3 font-medium">Category</th>
-                            <th className="text-left px-6 py-3 font-medium">Status</th>
-                            <th className="text-left px-6 py-3 font-medium hidden sm:table-cell">Date</th>
-                            <th className="text-right px-6 py-3 font-medium">Actions</th>
+                        <tr className="border-b border-glass-border text-gray-500 text-xs uppercase tracking-widest bg-gray-500/5">
+                            <th className="text-left px-6 py-4 font-bold">Title</th>
+                            <th className="text-left px-6 py-4 font-bold">Category</th>
+                            <th className="text-left px-6 py-4 font-bold">Status</th>
+                            <th className="text-left px-6 py-4 font-bold hidden sm:table-cell">Date</th>
+                            <th className="text-right px-6 py-4 font-bold">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-glass-border/50">
                         {isLoading ? (
                             Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)
                         ) : articles.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="px-6 py-12 text-center text-gray-600 text-sm">
-                                    No articles yet.{' '}
-                                    <Link to="/admin/articles/new" className="text-blue-400 hover:underline">
-                                        Create your first one →
+                                <td colSpan={5} className="px-6 py-12 text-center text-gray-500 text-sm italic italic">
+                                    No articles established yet.{' '}
+                                    <Link to="/admin/articles/new" className="text-primary hover:underline font-bold">
+                                        Initialize your first node →
                                     </Link>
                                 </td>
                             </tr>
@@ -112,16 +112,16 @@ const AdminDashboard = () => {
                             articles.map((article) => (
                                 <tr
                                     key={article.id}
-                                    className={`hover:bg-white/5 transition-colors ${deletingId === article.id ? 'opacity-40 pointer-events-none' : ''}`}
+                                    className={`hover:bg-primary/5 transition-all ${deletingId === article.id ? 'opacity-40 pointer-events-none' : ''}`}
                                 >
                                     {/* Title */}
-                                    <td className="px-6 py-4 text-white font-medium max-w-xs truncate">
+                                    <td className="px-6 py-4 text-white font-bold max-w-xs truncate">
                                         {article.title}
                                     </td>
 
                                     {/* Category */}
-                                    <td className="px-6 py-4 text-gray-400 text-xs">
-                                        {article.categories?.name ?? '—'}
+                                    <td className="px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-tight">
+                                        {article.categories?.name ?? 'General'}
                                     </td>
 
                                     {/* Status badge */}
@@ -129,7 +129,7 @@ const AdminDashboard = () => {
                                         {(() => {
                                             const status = article.is_published ? 'published' : 'draft'
                                             return (
-                                                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${STATUS_STYLES[status] ?? STATUS_STYLES.draft}`}>
+                                                <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-widest ${STATUS_STYLES[status] ?? STATUS_STYLES.draft}`}>
                                                     {status}
                                                 </span>
                                             )
@@ -137,10 +137,10 @@ const AdminDashboard = () => {
                                     </td>
 
                                     {/* Date */}
-                                    <td className="px-6 py-4 text-gray-500 text-xs hidden sm:table-cell">
+                                    <td className="px-6 py-4 text-gray-500 text-xs font-mono hidden sm:table-cell">
                                         {article.published_at
                                             ? new Date(article.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                                            : '—'
+                                            : 'PENDING'
                                         }
                                     </td>
 
@@ -148,13 +148,13 @@ const AdminDashboard = () => {
                                     <td className="px-6 py-4 text-right whitespace-nowrap">
                                         <Link
                                             to={`/admin/articles/${article.id}/edit`}
-                                            className="text-blue-400 hover:text-blue-300 transition-colors mr-5 text-xs font-medium"
+                                            className="text-primary hover:text-blue-600 transition-colors mr-6 text-xs font-black uppercase tracking-widest"
                                         >
                                             Edit
                                         </Link>
                                         <button
                                             onClick={() => handleDelete(article)}
-                                            className="text-red-400 hover:text-red-300 transition-colors text-xs font-medium"
+                                            className="text-red-500 hover:text-red-600 transition-colors text-xs font-black uppercase tracking-widest"
                                         >
                                             {deletingId === article.id ? 'Deleting…' : 'Delete'}
                                         </button>

@@ -4,7 +4,8 @@ import useSEO from '../hooks/useSEO'
 // Home Page — the spatial "atlas" layout
 const Home = () => {
     useSEO({
-        description: 'In-depth electronics insights, deep dives, analysis and emerging trends in semiconductors, AI, and robotics.',
+        title: 'Semiconductor Intelligence & AI Hardware Atlas',
+        description: 'Professional engineering insights on GaN/SiC power electronics, AI chip architectures, neuromorphic computing, and high-speed PCB design. Your technical atlas for the future of hardware.',
     })
     return <NodeCanvas />
 }

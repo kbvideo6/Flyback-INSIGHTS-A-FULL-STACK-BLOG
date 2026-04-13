@@ -136,4 +136,18 @@
         z-index: 0;
         pointer-events: none;
     }
-}
+}
+
+/* ── TipTap Editor Theme Overrides ── */
+.ProseMirror {
+    color: var(--text-primary) !important;
+    min-height: 26rem;
+    padding: 1.5rem;
+    outline: none;
+}
+.ProseMirror h1, .ProseMirror h2, .ProseMirror h3 { color: var(--text-primary) !important; font-weight: bold; margin-top: 1.5rem; margin-bottom: 1rem; }
+.ProseMirror p { color: var(--text-secondary) !important; margin-bottom: 1rem; line-height: 1.6; }
+.ProseMirror blockquote { border-left: 4px solid var(--accent-blue); padding-left: 1rem; font-style: italic; color: var(--text-secondary); }
+.ProseMirror pre { background: #000; color: #4ade80; padding: 1.25rem; border-radius: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1.5rem; }
+.ProseMirror ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+.ProseMirror ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }

@@ -5,7 +5,10 @@ import { getArticleUrl } from '../constants/articles'
 import useSEO from '../hooks/useSEO'
 
 const Analysis = () => {
-    useSEO({ title: 'Analysis', description: 'Data-driven reports, market forecasts, and strategic insights on the global electronics and semiconductor industry.' })
+    useSEO({
+        title: 'Semiconductor Market Analysis & Industry Forecasts',
+        description: 'Data-driven electronics intelligence: Analyzing the global chip supply chain, foundry capacity, and emerging hardware market trends (2025-2030).'
+    })
     const { articles, isLoading } = useArticles()
     const analysisArticles = articles.filter((a) => a.categories?.name?.toLowerCase().includes('analysis'))
 

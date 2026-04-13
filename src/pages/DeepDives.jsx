@@ -5,7 +5,10 @@ import { getArticleUrl } from '../constants/articles'
 import useSEO from '../hooks/useSEO'
 
 const DeepDives = () => {
-    useSEO({ title: 'Deep Dives', description: 'In-depth technical explorations of the technologies shaping the future of electronics and computing.' })
+    useSEO({ 
+        title: 'Semiconductor Tutorials & Technical Deep Dives', 
+        description: 'Intensive hardware engineering explorations: From RISC-V architecture and GaN power systems to advanced PCB thermal management and embedded firmware design.' 
+    })
     const { articles, isLoading } = useArticles()
 
     const heroArticles = articles.filter((a) => a.is_featured)

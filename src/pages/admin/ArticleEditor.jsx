@@ -229,7 +229,12 @@ const ArticleEditor = () => {
 
         // Use subtopic if selected, otherwise main topic
         const finalCatId = selectedSubId || selectedParentId
-        if (!finalCatId) { setSaveError('Category is required.'); return }
+        const parsedCatId = parseInt(finalCatId, 10)
+        
+        if (!finalCatId || isNaN(parsedCatId)) { 
+            setSaveError('A valid Category or Subcategory must be selected.'); 
+            return 
+        }
 
         setSaving(true)
         setSaveError(null)
@@ -264,56 +269,56 @@ const ArticleEditor = () => {
     }
 
     // ── Field style helper ────────────────────────────────────────────────
-    const fieldCls = 'w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors'
+    const fieldCls = 'w-full bg-background-dark border border-glass-border rounded-lg px-4 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all'
 
     return (
         <div className="max-w-4xl mx-auto px-4 pb-16">
             {/* Page heading */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <h1 className="text-2xl font-bold text-white">
-                    {isNew ? 'New Article' : 'Edit Article'}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                <h1 className="text-3xl font-bold" style={{ color: 'var(--logo-color)' }}>
+                    {isNew ? 'New Entry' : 'Refine Article'}
                 </h1>
                 <button
                     type="button"
                     onClick={() => navigate('/admin/articles')}
-                    className="text-gray-500 hover:text-white text-sm transition-colors text-left"
+                    className="text-primary hover:text-blue-600 text-sm font-bold transition-colors text-left uppercase tracking-widest"
                 >
-                    ← Back to Dashboard
+                    ← Dashboard
                 </button>
             </div>
 
             {/* Save error */}
             {saveError && (
-                <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                <div className="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 text-sm font-medium">
                     {saveError}
                 </div>
             )}
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 {/* ── Cover image ── */}
-                <div className="glass-panel p-6 border-white/5 bg-white/[0.02]">
-                    <label className="block text-xs font-bold tracking-widest text-blue-400 uppercase mb-4">Featured Image</label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                        <div className="space-y-4">
+                <div className="glass-panel p-6 border-glass-border bg-white/[0.02]">
+                    <label className="block text-[11px] font-black tracking-widest text-primary uppercase mb-5">Imagery & Graphics</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div className="space-y-5">
                             <input
                                 id="article-cover-url"
                                 type="url"
                                 value={coverUrl}
                                 onChange={(e) => setCoverUrl(e.target.value)}
-                                placeholder="https://images.unsplash.com/..."
+                                placeholder="https://source.unsplash.com/..."
                                 className={fieldCls}
                             />
-                            <p className="text-[10px] text-gray-500 italic">
-                                Use high-resolution URLs for better social card previews.
+                            <p className="text-[10px] text-gray-500 italic leading-relaxed">
+                                Provide a high-density image URL (1200x630 min) for premium social distribution.
                             </p>
                             <div className="flex items-center gap-3">
                                 <label
                                     htmlFor="article-cover-file"
-                                    className={`cursor-pointer px-4 py-2 rounded-lg text-xs font-medium border border-white/10 transition-colors ${
-                                        isUploading ? 'opacity-50 pointer-events-none bg-white/5 text-gray-500' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'
+                                    className={`cursor-pointer px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest border border-glass-border transition-all ${
+                                        isUploading ? 'opacity-40 pointer-events-none' : 'bg-primary/5 text-primary hover:bg-primary/15'
                                     }`}
                                 >
-                                    {isUploading ? 'Uploading…' : '⬆ Upload from file'}
+                                    {isUploading ? 'Uploading…' : '⬆ Local Upload'}
                                 </label>
                                 <input
                                     id="article-cover-file"
@@ -323,16 +328,16 @@ const ArticleEditor = () => {
                                     onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f) }}
                                     disabled={isUploading}
                                 />
-                                {uploadError && <p className="text-red-400 text-xs">{uploadError}</p>}
+                                {uploadError && <p className="text-red-500 text-[10px] font-bold">{uploadError}</p>}
                             </div>
                         </div>
-                        <div className="aspect-video bg-black/40 border border-white/10 rounded-xl overflow-hidden flex items-center justify-center relative">
+                        <div className="aspect-video bg-background-dark/40 border border-glass-border rounded-2xl overflow-hidden flex items-center justify-center relative shadow-inner">
                             {coverUrl ? (
                                 <img src={coverUrl} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
                                 <div className="text-center px-4">
-                                    <span className="block text-2xl mb-2 opacity-20">🖼</span>
-                                    <span className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Image Preview</span>
+                                    <span className="block text-4xl mb-3 opacity-10">🖼</span>
+                                    <span className="text-[10px] text-gray-600 uppercase tracking-widest font-black opacity-30">Projection Preview</span>
                                 </div>
                             )}
                         </div>
@@ -340,22 +345,22 @@ const ArticleEditor = () => {
                 </div>
 
                 {/* ── Metadata ── */}
-                <div className="bg-gray-900 border border-white/10 rounded-xl p-6 space-y-4">
+                <div className="glass-panel p-8 border-glass-border space-y-6">
                     {/* Title */}
                     <div>
-                        <label htmlFor="article-title" className="block text-xs font-medium text-gray-400 mb-1">Title <span className="text-red-400">*</span></label>
-                        <input id="article-title" type="text" required value={title} onChange={handleTitleChange} placeholder="Article title" className={fieldCls} />
+                        <label htmlFor="article-title" className="block text-[11px] font-black tracking-widest text-primary uppercase mb-2">Technical Title <span className="text-red-500">*</span></label>
+                        <input id="article-title" type="text" required value={title} onChange={handleTitleChange} placeholder="GaN vs SiC: The 2025 Efficiency Gap" className={`${fieldCls} text-lg font-bold`} />
                     </div>
 
                     {/* Slug + Category */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label htmlFor="article-slug" className="block text-xs font-medium text-gray-400 mb-1">Slug <span className="text-red-400">*</span></label>
-                            <input id="article-slug" type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="auto-generated" className={`${fieldCls} font-mono`} />
+                            <label htmlFor="article-slug" className="block text-[11px] font-black tracking-widest text-primary uppercase mb-2">Canonical Slug <span className="text-red-500">*</span></label>
+                            <input id="article-slug" type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="auto-generated" className={`${fieldCls} font-mono italic`} />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-1">
-                                Main Topic <span className="text-red-400">*</span>
+                            <label className="block text-[11px] font-black tracking-widest text-primary uppercase mb-2">
+                                Primary Domain <span className="text-red-500">*</span>
                             </label>
                             <div className="flex gap-2">
                                 <select
@@ -364,31 +369,31 @@ const ArticleEditor = () => {
                                     onChange={(e) => { setSelectedParentId(e.target.value); setSelectedSubId('') }}
                                     className={fieldCls}
                                 >
-                                    <option value="">Select Topic…</option>
+                                    <option value="">Select Domain…</option>
                                     {topicTree.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                                 <button
                                     type="button"
                                     onClick={handleCreateCategory}
                                     disabled={isCreatingCat}
-                                    className="px-3 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                                    className="px-4 bg-primary/5 border border-glass-border rounded-lg text-primary hover:bg-primary/15 transition-all font-black text-lg"
                                     title="Add New Topic"
                                 >
-                                    {isCreatingCat ? '...' : '+'}
+                                    {isCreatingCat ? '…' : '+'}
                                 </button>
                             </div>
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-1">Subtopic</label>
+                            <label className="block text-[11px] font-black tracking-widest text-primary uppercase mb-2">Specialization</label>
                             <div className="flex gap-2">
                                 <select
                                     id="article-subtopic"
                                     value={selectedSubId}
                                     onChange={(e) => setSelectedSubId(e.target.value)}
                                     disabled={!selectedParentId}
-                                    className={`${fieldCls} disabled:opacity-40`}
+                                    className={`${fieldCls} disabled:opacity-30`}
                                 >
-                                    <option value="">No subtopic</option>
+                                    <option value="">Full Coverage</option>
                                     {topicTree.find(t => String(t.id) === selectedParentId)?.subtopics?.map((s) => (
                                         <option key={s.id} value={s.id}>{s.name}</option>
                                     ))}
@@ -397,58 +402,58 @@ const ArticleEditor = () => {
                                     type="button"
                                     onClick={handleCreateSubcategory}
                                     disabled={!selectedParentId || isCreatingSub}
-                                    className="px-3 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-40"
+                                    className="px-4 bg-primary/5 border border-glass-border rounded-lg text-primary hover:bg-primary/15 transition-all disabled:opacity-30 font-black text-lg"
                                     title="Add New Subtopic"
                                 >
-                                    {isCreatingSub ? '...' : '+'}
+                                    {isCreatingSub ? '…' : '+'}
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Excerpt + Read time */}
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="col-span-2">
-                            <div className="flex items-center justify-between mb-1">
-                                <label htmlFor="article-excerpt" className="block text-xs font-medium text-gray-400">Excerpt</label>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="md:col-span-3">
+                            <div className="flex items-center justify-between mb-2">
+                                <label htmlFor="article-excerpt" className="block text-[11px] font-black tracking-widest text-primary uppercase">Executive Summary</label>
                                 <button
                                     type="button"
                                     onClick={() => {
                                         const text = editor?.getText().slice(0, 160).trim()
                                         if (text) setExcerpt(text + (text.length >= 160 ? '…' : ''))
                                     }}
-                                    className="text-[10px] text-blue-400 hover:text-blue-300 transition-colors"
+                                    className="text-[10px] font-black text-primary hover:text-blue-600 transition-colors uppercase tracking-[0.05em]"
                                 >
-                                    ✨ Auto-generate
+                                    ✨ Auto‑Synth
                                 </button>
                             </div>
-                            <textarea id="article-excerpt" rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short summary shown in article cards…" className={`${fieldCls} resize-none`} />
+                            <textarea id="article-excerpt" rows={3} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Condensed insight for grid previews…" className={`${fieldCls} resize-none leading-relaxed`} />
                         </div>
                         <div>
-                            <label htmlFor="article-readtime" className="block text-xs font-medium text-gray-400 mb-1">Read time</label>
-                            <input id="article-readtime" type="text" value={readTime} onChange={(e) => setReadTime(e.target.value)} placeholder="8 min read" className={fieldCls} />
+                            <label htmlFor="article-readtime" className="block text-[11px] font-black tracking-widest text-primary uppercase mb-2">Read Velocity</label>
+                            <input id="article-readtime" type="text" value={readTime} onChange={(e) => setReadTime(e.target.value)} placeholder="8 MIN READ" className={`${fieldCls} font-mono`} />
                         </div>
                     </div>
                 </div>
 
                 {/* ── Rich text editor ── */}
-                <div className="bg-gray-900 border border-white/10 rounded-xl overflow-hidden">
+                <div className="glass-panel border-glass-border overflow-hidden shadow-lg">
                     {/* Toolbar */}
                     {editor && (
-                        <div className="flex flex-wrap items-center gap-1.5 px-4 py-3 border-b border-white/10 bg-gray-800/60">
+                        <div className="flex flex-wrap items-center gap-1.5 px-5 py-4 border-b border-glass-border bg-background-dark/60 backdrop-blur-md">
                             <Btn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold"><span className="w-5 h-5 flex items-center justify-center font-bold">B</span></Btn>
                             <Btn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Italic"><span className="w-5 h-5 flex items-center justify-center italic font-serif">I</span></Btn>
                             <Btn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Strikethrough"><span className="w-5 h-5 flex items-center justify-center line-through">S</span></Btn>
                             {DIVIDER}
-                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2"><span className="px-1">H2</span></Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Heading 3"><span className="px-1">H3</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2"><span className="px-1.5 font-bold">H2</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Heading 3"><span className="px-1.5 font-bold">H3</span></Btn>
                             {DIVIDER}
-                            <Btn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Bullet list"><span className="px-1 text-lg">•</span></Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Ordered list"><span className="px-1">1.</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Bullet list"><span className="px-1.5 text-xl leading-none">•</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Ordered list"><span className="px-1.5 font-bold">1.</span></Btn>
                             {DIVIDER}
-                            <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Blockquote"><span className="text-lg">“</span></Btn>
-                            <Btn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} title="Code block"><span className="text-xs">{`</>`}</span></Btn>
-                            <Btn onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule">—</Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Blockquote"><span className="text-2xl leading-none">“</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} title="Code block"><span className="text-xs font-mono">{`</>`}</span></Btn>
+                            <Btn onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule" className="font-bold">—</Btn>
                             {DIVIDER}
                             {/* Insert image from URL */}
                             <Btn
@@ -458,7 +463,7 @@ const ArticleEditor = () => {
                                     if (url) editor.chain().focus().setImage({ src: url }).run()
                                 }}
                             >
-                                🖼
+                                <span className="text-lg">🖼</span>
                             </Btn>
 
                             {/* Image Resize Controls (only show when image is selected) */}
@@ -487,16 +492,7 @@ const ArticleEditor = () => {
                                         title="Full (100%)"
                                         onClick={() => editor.chain().focus().updateAttributes('image', { width: '100%' }).run()}
                                     >
-                                        Full
-                                    </Btn>
-                                    <Btn
-                                        title="Custom Width"
-                                        onClick={() => {
-                                            const w = window.prompt('Enter width (e.g. 400px or 60%):', '400px')
-                                            if (w) editor.chain().focus().updateAttributes('image', { width: w }).run()
-                                        }}
-                                    >
-                                        ↔
+                                        FULL
                                     </Btn>
                                 </>
                             )}
@@ -506,34 +502,34 @@ const ArticleEditor = () => {
                 </div>
 
                 {/* ── Action bar ── */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-                    <div className="text-xs text-gray-600 order-2 sm:order-1">
-                        {editor ? `${editor.storage.characterCount?.characters?.() ?? '—'} characters` : ''}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6">
+                    <div className="text-[11px] font-bold text-gray-600 uppercase tracking-widest order-2 sm:order-1">
+                        {editor ? `${editor.storage.characterCount?.characters?.() ?? '0'} PROCESSED CHARACTERS` : ''}
                     </div>
-                    <div className="flex flex-wrap justify-center gap-3 order-1 sm:order-2 w-full sm:w-auto">
+                    <div className="flex flex-wrap justify-center gap-4 order-1 sm:order-2 w-full sm:w-auto">
                         <button
                             type="button"
                             onClick={() => navigate('/admin/articles')}
                             disabled={saving}
-                            className="flex-1 sm:flex-none px-5 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-40 border border-transparent"
+                            className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-gray-500 hover:text-red-500 hover:bg-red-500/5 transition-all disabled:opacity-40"
                         >
-                            Cancel
+                            Abort
                         </button>
                         <button
                             type="button"
                             onClick={() => handleSave(false)}
                             disabled={saving}
-                            className="flex-1 sm:flex-none px-5 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:bg-white/5 transition-colors disabled:opacity-40"
+                            className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest border border-glass-border text-primary hover:bg-primary/5 transition-all disabled:opacity-40 shadow-sm"
                         >
-                            {saving ? 'Saving…' : 'Save Draft'}
+                            {saving ? 'STASHING…' : 'Save Draft'}
                         </button>
                         <button
                             type="button"
                             onClick={() => handleSave(true)}
                             disabled={saving}
-                            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium px-8 py-2.5 rounded-lg text-sm transition-colors shadow-lg shadow-blue-900/20"
+                            className="w-full sm:w-auto bg-primary hover:bg-blue-600 disabled:opacity-50 text-white font-black uppercase tracking-[0.1em] px-10 py-3.5 rounded-xl text-xs transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:scale-[1.02]"
                         >
-                            {saving ? 'Publishing…' : 'Publish Article'}
+                            {saving ? 'Transmitting…' : 'Publish Article'}
                         </button>
                     </div>
                 </div>

@@ -1,0 +1,21 @@
+/*
+  # Content Security Policy (Basic)
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://*.google-analytics.com; connect-src 'self' https://*.supabase.co https://*.google-analytics.com; img-src 'self' data: https://*.supabase.co https://images.unsplash.com https://i.gr-assets.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self';
+
+  # HSTS (1 year)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Clickjacking Protection
+  X-Frame-Options: DENY
+
+  # MIME Sniffing Protection
+  X-Content-Type-Options: nosniff
+
+  # XSS Protection for older browsers
+  X-XSS-Protection: 1; mode=block
+
+  # Referrer Policy
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Permissions Policy
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()

@@ -7,8 +7,8 @@ import { getArticleUrl } from '../constants/articles'
 
 const ArchiveAtlas = () => {
     useSEO({
-        title: 'Archive Atlas',
-        description: 'Explore the complete chronological library of Flyback Electronics. Search and navigate through every deep dive, analysis, and news item we have ever published.'
+        title: 'Chronological Technical Archive | Flyback Electronics',
+        description: 'Explore our complete library of electronics intelligence. Every deep dive, hardware tutorial, and market report published at Flyback, meticulously indexed for technical research.'
     })
     const { articles, isLoading } = useArticles()
     const [search, setSearch] = useState('')
