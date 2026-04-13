@@ -12,11 +12,11 @@ import { supabase } from '../lib/supabase'
 // Desktop positions for the 6 standard nodes around the hero
 const STANDARD_POSITIONS = [
     { top: '3%', left: '4%', width: '300px' },
-    { top: '6%', right: '1%', width: '280px' },
-    { bottom: '28%', left: '38%', width: '300px' },   // moved to open center-bottom
+    { top: '6%', right: '1%', width: '300px' },
+    { bottom: '28%', left: '38%', width: '300px' }, 
     { bottom: '5%', right: '34%', width: '300px' },
-    { bottom: '42%', right: '1%', width: '290px' },
-    { top: '38%', left: '2%', width: '270px' },
+    { bottom: '42%', right: '1%', width: '300px' },
+    { top: '38%', left: '2%', width: '300px' },
 ]
 
 const EDGES = [

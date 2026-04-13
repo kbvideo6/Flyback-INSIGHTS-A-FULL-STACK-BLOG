@@ -62,6 +62,13 @@ const ArticleEditor = () => {
             ResizableImage.configure({ inline: false, allowBase64: false }),
         ],
         content: '<p>Start writing your article here…</p>',
+        onUpdate: ({ editor }) => {
+            // Auto-calculate read time: ~200 words per minute
+            const text = editor.getText()
+            const words = text.trim().split(/\s+/).length
+            const minutes = Math.max(1, Math.ceil(words / 200))
+            setReadTime(String(minutes))
+        },
         editorProps: {
             attributes: {
                 class: 'prose prose-invert max-w-none min-h-[26rem] px-6 py-5 focus:outline-none text-gray-200 leading-relaxed',
@@ -169,10 +176,11 @@ const ArticleEditor = () => {
         const name = window.prompt('Enter new category name:')
         if (!name) return
         setIsCreatingCat(true)
+        const now = new Date().toISOString()
         try {
             const { data, error } = await supabase
                 .from('categories')
-                .insert([{ name, slug: slugify(name) }])
+                .insert([{ name, slug: slugify(name), created_at: now, updated_at: now }])
                 .select()
                 .single()
             if (error) throw error
@@ -191,10 +199,17 @@ const ArticleEditor = () => {
         const name = window.prompt('Enter new subcategory name:')
         if (!name) return
         setIsCreatingSub(true)
+        const now = new Date().toISOString()
         try {
             const { data, error } = await supabase
                 .from('categories')
-                .insert([{ name, slug: slugify(name), parent_id: parseInt(selectedParentId, 10) }])
+                .insert([{
+                    name,
+                    slug: slugify(name),
+                    parent_id: parseInt(selectedParentId, 10),
+                    created_at: now,
+                    updated_at: now
+                }])
                 .select()
                 .single()
             if (error) throw error
@@ -276,39 +291,51 @@ const ArticleEditor = () => {
 
             <div className="space-y-6">
                 {/* ── Cover image ── */}
-                <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1">Cover Image</label>
-                    <div className="flex flex-col gap-2">
-                        <input
-                            id="article-cover-url"
-                            type="url"
-                            value={coverUrl}
-                            onChange={(e) => { setCoverUrl(e.target.value); setUploadError(null) }}
-                            placeholder="Paste image URL, or upload below…"
-                            className={fieldCls}
-                        />
-                        <div className="flex items-center gap-3">
-                            <label
-                                htmlFor="article-cover-file"
-                                className={`cursor-pointer px-4 py-2 rounded-lg text-xs font-medium border border-white/10 transition-colors ${
-                                    isUploading ? 'opacity-50 pointer-events-none bg-white/5 text-gray-500' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'
-                                }`}
-                            >
-                                {isUploading ? 'Uploading…' : '⬆ Upload from file'}
-                            </label>
+                <div className="glass-panel p-6 border-white/5 bg-white/[0.02]">
+                    <label className="block text-xs font-bold tracking-widest text-blue-400 uppercase mb-4">Featured Image</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <div className="space-y-4">
                             <input
-                                id="article-cover-file"
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f) }}
-                                disabled={isUploading}
+                                id="article-cover-url"
+                                type="url"
+                                value={coverUrl}
+                                onChange={(e) => setCoverUrl(e.target.value)}
+                                placeholder="https://images.unsplash.com/..."
+                                className={fieldCls}
                             />
-                            {uploadError && <p className="text-red-400 text-xs">{uploadError}</p>}
+                            <p className="text-[10px] text-gray-500 italic">
+                                Use high-resolution URLs for better social card previews.
+                            </p>
+                            <div className="flex items-center gap-3">
+                                <label
+                                    htmlFor="article-cover-file"
+                                    className={`cursor-pointer px-4 py-2 rounded-lg text-xs font-medium border border-white/10 transition-colors ${
+                                        isUploading ? 'opacity-50 pointer-events-none bg-white/5 text-gray-500' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'
+                                    }`}
+                                >
+                                    {isUploading ? 'Uploading…' : '⬆ Upload from file'}
+                                </label>
+                                <input
+                                    id="article-cover-file"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f) }}
+                                    disabled={isUploading}
+                                />
+                                {uploadError && <p className="text-red-400 text-xs">{uploadError}</p>}
+                            </div>
                         </div>
-                        {coverUrl && (
-                            <img src={coverUrl} alt="Cover preview" className="mt-1 rounded-lg max-h-40 object-cover border border-white/10" />
-                        )}
+                        <div className="aspect-video bg-black/40 border border-white/10 rounded-xl overflow-hidden flex items-center justify-center relative">
+                            {coverUrl ? (
+                                <img src={coverUrl} alt="Preview" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="text-center px-4">
+                                    <span className="block text-2xl mb-2 opacity-20">🖼</span>
+                                    <span className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Image Preview</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -355,7 +382,7 @@ const ArticleEditor = () => {
                             <label className="block text-xs font-medium text-gray-400 mb-1">Subtopic</label>
                             <div className="flex gap-2">
                                 <select
-                                    id="article-sub-category"
+                                    id="article-subtopic"
                                     value={selectedSubId}
                                     onChange={(e) => setSelectedSubId(e.target.value)}
                                     disabled={!selectedParentId}
@@ -382,7 +409,19 @@ const ArticleEditor = () => {
                     {/* Excerpt + Read time */}
                     <div className="grid grid-cols-3 gap-4">
                         <div className="col-span-2">
-                            <label htmlFor="article-excerpt" className="block text-xs font-medium text-gray-400 mb-1">Excerpt</label>
+                            <div className="flex items-center justify-between mb-1">
+                                <label htmlFor="article-excerpt" className="block text-xs font-medium text-gray-400">Excerpt</label>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const text = editor?.getText().slice(0, 160).trim()
+                                        if (text) setExcerpt(text + (text.length >= 160 ? '…' : ''))
+                                    }}
+                                    className="text-[10px] text-blue-400 hover:text-blue-300 transition-colors"
+                                >
+                                    ✨ Auto-generate
+                                </button>
+                            </div>
                             <textarea id="article-excerpt" rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short summary shown in article cards…" className={`${fieldCls} resize-none`} />
                         </div>
                         <div>

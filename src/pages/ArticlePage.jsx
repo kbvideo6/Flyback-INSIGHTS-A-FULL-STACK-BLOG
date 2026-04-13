@@ -149,7 +149,7 @@ const ArticlePage = () => {
             </h1>
 
             {/* ── Meta info ── */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-10 pb-8 border-b border-glass-border">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-10 pb-8 border-b border-glass-border">
                 {article.author && (
                     <span className="flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <span className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white text-xs font-bold">
@@ -263,6 +263,36 @@ const ArticlePage = () => {
                     )}
                 </section>
             )}
+            {/* ── Footer / Authority Section ── */}
+            <div className="mt-16 pt-12 border-t border-white/10">
+                <div className="glass-panel p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+                    
+                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-xl shrink-0">
+                        FE
+                    </div>
+                    
+                    <div className="flex-1 text-center md:text-left">
+                        <h4 className="text-xl font-display font-bold text-white mb-2">About the Author</h4>
+                        <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                            <strong>Flyback Engineer</strong> is an Electronic and Embedded System Design Engineer with 50+ successful PCB designs shipped globally. Specializing in high-speed digital layout, firmware development, and MERN stack IoT integration.
+                        </p>
+                        <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                            <a 
+                                href="https://www.fiverr.com/s/your-profile-link" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs bg-primary hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg transition-colors shadow-lg shadow-blue-600/20"
+                            >
+                                Hire for Design
+                            </a>
+                            <Link to="/about" className="text-xs bg-white/5 hover:bg-white/10 text-gray-300 px-4 py-2 rounded-lg border border-white/10 transition-colors">
+                                View Credentials
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </article>
     )
 }

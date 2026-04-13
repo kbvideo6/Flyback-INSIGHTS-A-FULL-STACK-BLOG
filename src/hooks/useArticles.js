@@ -41,7 +41,19 @@ const useArticles = (categorySlug = null) => {
         }
 
         run().finally(() => { if (!cancelled) setIsLoading(false) })
-        return () => { cancelled = true }
+
+        // Real-time subscription
+        const channel = supabase
+            .channel('public:articles')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'articles' }, () => {
+                run() // Refetch logic on change
+            })
+            .subscribe()
+
+        return () => {
+            cancelled = true
+            supabase.removeChannel(channel)
+        }
     }, [categorySlug])
 
     return { articles, isLoading, error }

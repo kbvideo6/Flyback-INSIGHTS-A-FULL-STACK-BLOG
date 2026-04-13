@@ -7,7 +7,43 @@ import useSEO from '../hooks/useSEO'
 const Analysis = () => {
     useSEO({ title: 'Analysis', description: 'Data-driven reports, market forecasts, and strategic insights on the global electronics and semiconductor industry.' })
     const { articles, isLoading } = useArticles()
-    const analysisArticles = articles.filter((a) => a.categories?.name === 'Analysis')
+    const analysisArticles = articles.filter((a) => a.categories?.name?.toLowerCase().includes('analysis'))
+
+    if (!isLoading && analysisArticles.length === 0) {
+        return (
+            <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 py-24 text-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-500/10 border border-green-500/20 mb-6">
+                    <svg className="w-10 h-10 text-green-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">No active reports yet</h2>
+                <p className="text-gray-400 max-w-md mx-auto mb-12 leading-relaxed">
+                    Our technical analysts are currently preparing the next series of industry reports. Here is what's in the pipeline:
+                </p>
+
+                {/* Roadmap Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left max-w-5xl mx-auto mb-16 px-4">
+                    {[
+                        { icon: '📡', title: '6G Architecture', desc: 'Analyzing the physical layer of the next-gen wireless standard.' },
+                        { icon: '🏭', title: 'Fab Economics', desc: 'A deep dive into 2nm node manufacturing costs and yields.' },
+                        { icon: '🤖', title: 'Edge AI Benchmarks', desc: 'Comparative analysis of specialized NPUs vs. general GPUs.' }
+                    ].map(item => (
+                        <div key={item.title} className="glass-panel p-6 border-white/5 bg-white/[0.02] flex flex-col gap-3 group hover:border-primary/30 transition-all duration-300">
+                            <span className="text-2xl mb-1">{item.icon}</span>
+                            <h4 className="font-display font-bold text-white group-hover:text-primary transition-colors">{item.title}</h4>
+                            <p className="text-[11px] text-gray-500 uppercase tracking-widest font-bold mb-1 italic">Report in Preparation</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <Link to="/" className="text-primary hover:text-blue-400 transition-colors inline-flex items-center gap-2 font-medium">
+                    ← Back to Atlas
+                </Link>
+            </div>
+        )
+    }
 
     return (
         <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 py-12">

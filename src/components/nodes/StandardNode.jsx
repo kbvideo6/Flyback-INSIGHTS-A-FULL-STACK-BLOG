@@ -7,9 +7,9 @@ const StandardNode = ({ slug, title = 'Article Title', description = 'Article de
 
     return (
         <Wrapper {...wrapperProps}>
-            <article className="glass-panel p-4 group cursor-pointer hover:border-primary/30 transition-all duration-500">
+            <article className="glass-panel p-4 group cursor-pointer hover:border-primary/30 transition-all duration-500 w-[280px] min-h-[260px] flex flex-col">
                 {/* Cover image or gradient fallback */}
-                <div className="relative overflow-hidden rounded-xl mb-4 aspect-video bg-gray-800">
+                <div className="relative overflow-hidden rounded-xl mb-4 aspect-video bg-gray-900 shrink-0">
                     {coverImageUrl ? (
                         <img
                             src={coverImageUrl}
@@ -17,13 +17,13 @@ const StandardNode = ({ slug, title = 'Article Title', description = 'Article de
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                     ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 group-hover:scale-110 transition-transform duration-700" />
+                        <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-950 group-hover:scale-110 transition-transform duration-700" />
                     )}
                 </div>
-                <h3 className="font-display text-lg font-bold text-white leading-tight mb-2 group-hover:text-primary transition-colors">
+                <h3 className="font-display text-lg font-bold text-white leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
                     {title}
                 </h3>
-                <p className="text-gray-400 text-xs line-clamp-2">
+                <p className="text-gray-300 text-xs line-clamp-3 mt-auto">
                     {description}
                 </p>
             </article>

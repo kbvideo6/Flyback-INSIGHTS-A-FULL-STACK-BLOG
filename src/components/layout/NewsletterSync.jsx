@@ -30,12 +30,10 @@ const NewsletterSync = () => {
         <section className="w-full max-w-[1400px] mx-auto px-4 lg:px-8 py-6">
             <div className="glass-panel px-6 py-5 lg:px-8 lg:py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 {/* ── Text ── */}
-                <div className="text-center sm:text-left flex-shrink-0">
-                    <h3 className="font-display italic font-bold text-white text-lg leading-tight">
-                        Newsletter Sync
-                    </h3>
-                    <p className="text-gray-400 text-xs mt-1">
-                        Receive daily intelligence updates.
+                <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-xl font-display font-bold text-white mb-2">Technical Intel, Weekly.</h3>
+                    <p className="text-gray-300 text-sm">
+                        Get the week's biggest electronics stories, explained. No fluff.
                     </p>
                 </div>
 

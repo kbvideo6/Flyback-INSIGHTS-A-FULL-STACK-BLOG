@@ -1,17 +1,48 @@
-/* ── Fonts are loaded via <link> preconnect in index.html for better performance ── */
-
 @import "tailwindcss";
 
-/* ── Design Tokens (Tailwind v4 CSS‑native theme) ────────────────  */
+/* ── Design Tokens (CSS Variables for Theme Switching) ── */
+:root {
+    /* Soft Light Theme (Default) */
+    --bg-main: #F8FAFC;
+    --bg-card: #FFFFFF;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --accent-blue: #2563EB;
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --glass-surface: rgba(255, 255, 255, 0.8);
+    --card-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    --image-filter: brightness(0.96);
+    --logo-color: #0F172A;
+}
+
+[data-theme='dark'] {
+    /* Premium Dark Theme */
+    --bg-main: #0B0F19;
+    --bg-card: #111827;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-surface: rgba(255, 255, 255, 0.04);
+    --card-shadow: none;
+    --image-filter: none;
+    --logo-color: #FFFFFF;
+}
+
 @theme {
-    /* ── Colors ── */
-    --color-primary: #3B82F6;
-    --color-background-light: #f3f4f6;
-    --color-background-dark: #0f1115;
-    --color-glass-border: rgba(255, 255, 255, 0.10);
-    --color-glass-surface: rgba(255, 255, 255, 0.05);
-    --color-glass-surface-hover: rgba(255, 255, 255, 0.08);
-    --color-glass-surface-light: rgba(255, 255, 255, 0.70);
+    /* ── Mapping Tailwind to Variables ── */
+    --color-primary: var(--accent-blue);
+    --color-background-dark: var(--bg-main);
+    --color-glass-border: var(--glass-border);
+    --color-glass-surface: var(--glass-surface);
+    
+    /* Dynamic Text Colors */
+    --color-gray-100: var(--text-primary);
+    --color-gray-200: var(--text-primary);
+    --color-gray-300: var(--text-secondary);
+    --color-gray-400: var(--text-secondary);
+    --color-gray-500: var(--text-secondary);
+    --color-white: var(--text-primary);
 
     /* ── Typography ── */
     --font-display: "Space Grotesk", sans-serif;
@@ -33,31 +64,37 @@
     }
 
     ::-webkit-scrollbar-track {
-        background: var(--color-background-dark);
+        background: var(--bg-main);
     }
 
     ::-webkit-scrollbar-thumb {
-        background: #333;
+        background: var(--text-secondary);
+        opacity: 0.3;
         border-radius: 4px;
+        border: 2px solid var(--bg-main);
     }
 
-    /* Body defaults matching the design reference */
     body {
-        background-color: var(--color-background-dark);
-        color: #e5e7eb;
-        /* gray‑200 equivalent */
+        background-color: var(--bg-main);
+        color: var(--text-primary);
         font-family: var(--font-sans);
         min-height: 100vh;
         overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     /* Text selection accent */
     ::selection {
-        background: var(--color-primary);
+        background: var(--accent-blue);
         color: #fff;
     }
 
-    /* Code & pre blocks use JetBrains Mono automatically */
+    /* Image handling */
+    img {
+        filter: var(--image-filter);
+        transition: filter 0.3s ease;
+    }
+
     code,
     pre,
     kbd,
@@ -70,20 +107,22 @@
 /* ── Reusable component utilities ────────────────────────────────── */
 @layer components {
 
-    /* Glass‑morphism panel used across cards, nav, sidebars
-       Tailwind equivalent: bg-glass-surface backdrop-blur-md border border-glass-border rounded-2xl */
+    /* Glass‑morphism panel (Responsive to Theme) */
     .glass-panel {
-        background: var(--color-glass-surface);
+        background: var(--glass-surface);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--color-glass-border);
+        border: 1px solid var(--glass-border);
         border-radius: var(--radius-2xl);
+        box-shadow: var(--card-shadow);
+        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     /* Decorative connection lines between nodes */
     .node-connection {
         position: absolute;
-        background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.2), transparent);
+        background: linear-gradient(to right, transparent, var(--accent-blue), transparent);
+        opacity: 0.2;
         height: 1px;
         z-index: 0;
         pointer-events: none;
@@ -91,9 +130,10 @@
 
     .vertical-connection {
         position: absolute;
-        background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.2), transparent);
+        background: linear-gradient(to bottom, transparent, var(--accent-blue), transparent);
+        opacity: 0.2;
         width: 1px;
         z-index: 0;
         pointer-events: none;
     }
-}
+}

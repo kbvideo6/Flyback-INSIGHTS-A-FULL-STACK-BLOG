@@ -169,7 +169,6 @@ const Footer = () => {
                 {/* ── Left: Legal links ── */}
                 <div className="flex items-center gap-x-6 text-xs font-medium text-gray-500">
                     <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
-                    <Link to="/careers" className="hover:text-primary transition-colors">Careers</Link>
                     <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
                     <Link to="/archive" className="hover:text-primary transition-colors">Archive Atlas</Link>
                 </div>

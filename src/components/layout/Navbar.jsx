@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom'
 import useNewsletter from '../../hooks/useNewsletter'
 import logoIcon from '../../assets/logo-icon.webp'
 import logoIconFallback from '../../assets/logo-icon.png'
+import useTheme from '../../hooks/useTheme'
 
 /* ─────────────────────────────────────────────
    Subscribe / Unsubscribe Modal
@@ -217,10 +218,29 @@ const NAV_LINKS = [
     { to: '/topics', label: 'Topics', icon: '📡' },
     { to: '/deep-dives', label: 'Deep Dives', icon: '🔬' },
     { to: '/analysis', label: 'Analysis', icon: '📊' },
+    { to: '/about', label: 'About', icon: '👤' },
     { to: '/contact', label: 'Contact', icon: '✉️' },
 ]
 
-const MobileMenu = ({ isOpen, onClose, onSubscribe }) => {
+const ThemeToggle = ({ theme, toggleTheme, className = "" }) => (
+    <button
+        onClick={toggleTheme}
+        className={`p-2 transition-colors hover:text-primary outline-none ${className}`}
+        aria-label="Toggle theme"
+    >
+        {theme === 'dark' ? (
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+        )}
+    </button>
+)
+
+const MobileMenu = ({ isOpen, onClose, onSubscribe, theme, toggleTheme }) => {
     const location = useLocation()
 
     // Close menu whenever the route changes
@@ -259,6 +279,10 @@ const MobileMenu = ({ isOpen, onClose, onSubscribe }) => {
                 paddingBottom: '1.5rem',
                 boxShadow: '0 24px 48px rgba(0,0,0,0.5)',
             }}>
+                {/* Theme toggle for mobile */}
+                <div className="flex justify-end px-6 pt-4">
+                    <ThemeToggle theme={theme} toggleTheme={toggleTheme} className="bg-white/5 rounded-full" />
+                </div>
                 {/* Nav links */}
                 <nav style={{ padding: '0.5rem 1.5rem 1rem' }}>
                     {NAV_LINKS.map(({ to, label, icon }) => (
@@ -329,6 +353,7 @@ const MobileMenu = ({ isOpen, onClose, onSubscribe }) => {
 const Navbar = () => {
     const [showSubscribe, setShowSubscribe] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const { theme, toggleTheme } = useTheme()
 
     // Close menu on resize to desktop
     useEffect(() => {
@@ -359,7 +384,7 @@ const Navbar = () => {
                             />
                         </picture>
                         <span className="font-display font-bold text-xl tracking-tight leading-none">
-                            <span className="text-white">Flyback</span>
+                            <span style={{ color: 'var(--logo-color)' }}>Flyback</span>
                             {' '}
                             <span className="text-primary italic font-normal">Electronics</span>
                         </span>
@@ -367,20 +392,30 @@ const Navbar = () => {
 
                     {/* ── Center: Nav links (desktop only) ── */}
                     <div className="hidden lg:flex items-center gap-x-8 text-sm font-medium">
-                        {NAV_LINKS.slice(0, 3).map(({ to, label }) => (
-                            <Link key={to} to={to} className="text-gray-300 hover:text-primary transition-colors">{label}</Link>
+                        {NAV_LINKS.slice(0, 4).map(({ to, label }) => (
+                            <Link key={to} to={to} className="text-current hover:text-primary transition-colors">{label}</Link>
                         ))}
+                        <a 
+                            href="https://www.fiverr.com/s/your-profile-link" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:text-white border border-primary/30 hover:bg-primary px-4 py-1.5 rounded-full transition-all duration-300"
+                        >
+                            Hire Me
+                        </a>
                         <button
                             id="navbar-subscribe-btn"
                             onClick={() => setShowSubscribe(true)}
-                            className="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-full transition-colors"
+                            className="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-full transition-colors shadow-lg shadow-blue-600/20"
                         >
                             Subscribe
                         </button>
                     </div>
 
                     {/* ── Right: Icons ── */}
-                    <div className="flex items-center gap-x-3 text-gray-300">
+                    <div className="flex items-center gap-x-3">
+                        <ThemeToggle theme={theme} toggleTheme={toggleTheme} className="hidden lg:block mr-2" />
+                        
                         {/* Search */}
                         <Link to="/archive" className="hover:text-primary transition-colors p-1" aria-label="Search">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -424,6 +459,8 @@ const Navbar = () => {
                 isOpen={menuOpen}
                 onClose={() => setMenuOpen(false)}
                 onSubscribe={() => setShowSubscribe(true)}
+                theme={theme}
+                toggleTheme={toggleTheme}
             />
 
             {/* Subscribe modal */}
